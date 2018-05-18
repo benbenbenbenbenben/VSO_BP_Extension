@@ -1,0 +1,50 @@
+{
+        "manifestVersion": 1,
+        "id": "vso-bp-extension",
+        "version": "0.1.20",
+        "name": "Business Process Viewer",
+        "description": "A Business Process document viewer.",
+        "publisher": "benjaminbabik",
+        "baseUri": "https://graph.dcdc.io/vsobp",
+        "targets": [
+            {
+                "id": "Microsoft.VisualStudio.Services"
+                }
+            ],
+        "icons": {
+            "default": "images/icon.png"
+         },
+        "contributions": [
+            {
+                "id": "BenjaminBabik.VSO.BP",
+                "type": "ms.vss-web.hub",
+                "description": "Adds a Business Process Viewer hub to the Work hub group.",
+                "targets": [
+                    "ms.vss-work-web.work-hub-group"
+                    ],
+                "properties": {
+                    "name": "Business Process",
+                    "order": 99,
+                    "uri": "drawio/viewer.html"
+                }
+            }
+        ],
+        "scopes": [
+            "vso.work",
+            "vso.code"
+        ],
+        "files": [
+            {
+                "path": "index.html", "addressable": true
+            },
+            {
+                "path": "scripts", "addressable": true
+            },
+            {
+                "path": "drawio", "addressable": true
+            },
+            {
+                "path": "images/icon.png", "addressable": true
+            }
+        ]
+    }
