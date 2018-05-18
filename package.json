@@ -10,10 +10,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://lnesdev.visualstudio.com/Automation/_git/VSO_BP_Extension"
+    "url": "https://github.com/benbenbenbenbenben/VSO_BP_Extension"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "vss-web-extension-sdk": "^5.131.0"
   }
