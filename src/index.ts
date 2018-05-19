@@ -11,7 +11,7 @@ import { ExtensionDataService } from "VSS/SDK/Services/ExtensionData";
 // get config
 const getConfig = async () => {
     var defaultconfig = {
-        repositoryType: "git",
+        repositoryType: null,
         repositoryId: null,
         repositoryPath: null
     }
@@ -28,8 +28,11 @@ const main = async () => {
     var gitclient = GitHttpClient.getClient()
     var tfclient = TfvcRestClient.getClient()
 
-    if (config.repositoryType == "git") {
+    if (config.repositoryType == null) {
         debugger
+        var content = $("#content")
+        var drawing = $("<iframe>")
+        
     }
 
     return null

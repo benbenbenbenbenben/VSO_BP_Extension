@@ -86,3 +86,4 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
     }); };
     main();
 });
+//# sourceMappingURL=index.js.map

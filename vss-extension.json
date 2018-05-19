@@ -1,7 +1,7 @@
 {
         "manifestVersion": 1,
         "id": "vso-bp-extension",
-        "version": "0.1.21",
+        "version": "0.1.23",
         "name": "Business Process Viewer",
         "description": "A Business Process document viewer.",
         "publisher": "benjaminbabik",
