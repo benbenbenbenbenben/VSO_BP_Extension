@@ -52,7 +52,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
             switch (_a.label) {
                 case 0:
                     defaultconfig = {
-                        repositoryType: "git",
+                        repositoryType: null,
                         repositoryId: null,
                         repositoryPath: null
                     };
@@ -68,7 +68,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
         });
     }); };
     var main = function () { return __awaiter(_this, void 0, void 0, function () {
-        var config, projectId, gitclient, tfclient;
+        var config, projectId, gitclient, tfclient, content, drawing;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, getConfig()];
@@ -77,8 +77,10 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                     projectId = VSS.getWebContext().project.id;
                     gitclient = GitHttpClient.getClient();
                     tfclient = TfvcRestClient.getClient();
-                    if (config.repositoryType == "git") {
+                    if (config.repositoryType == null) {
                         debugger;
+                        content = $("#content");
+                        drawing = $("<iframe>");
                     }
                     return [2 /*return*/, null];
             }
