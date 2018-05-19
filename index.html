@@ -2,11 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Hello World</title>
+    <script src="sdk/scripts/require.js"></script>
     <script src="sdk/scripts/VSS.SDK.js"></script>
 </head>
 <body>
     <script type="text/javascript">VSS.init();</script>
     <script type="text/javascript">VSS.notifyLoadSucceeded();</script>
-    <script type="text/javascript" src="index.js"></script>
+    <script type="text/javascript">
+        VSS.require(["dist/index"], function(app) {
+
+        })
+    </script>
 </body>
 </html>
