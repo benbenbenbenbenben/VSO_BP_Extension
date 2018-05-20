@@ -88,7 +88,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Combos", "TFS/Versio
                     _a = {};
                     return [4 /*yield*/, gitclient.getRepositories(projectId)];
                 case 2:
-                    gitSelect = (_a.source = _b.sent(),
+                    gitSelect = (_a.source = (_b.sent()).map(function (r) { return r.name; }),
                         _a);
                     repType = {
                         source: [
@@ -99,13 +99,14 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Combos", "TFS/Versio
                             gitSelectCtrl.setEnabled(this.getText() == "git");
                         }
                     };
+                    $("<label />").text("Repository Type:").appendTo(dlg);
                     repTypeCtrl = Controls.create(Combos.Combo, dlg, repType);
+                    $("<label />").text("Repository:").appendTo(dlg);
                     gitSelectCtrl = Controls.create(Combos.Combo, dlg, gitSelect);
                     Dialogs.show(Dialogs.ModalDialog, {
                         title: "Configure",
                         content: dlg.clone(),
                         okCallback: function (result) {
-                            $("<li />").text(result).appendTo(".person-list");
                         }
                     });
                     _b.label = 3;
