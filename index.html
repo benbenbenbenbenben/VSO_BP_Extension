@@ -8,8 +8,8 @@
 <body>
     <script type="text/javascript">VSS.init({ usePlatformScripts: true });</script>
     <script type="text/javascript">
-        VSS.ready(["dist/index"], function(app) {
-
+        VSS.ready(function(){
+            require(["dist/index"], function() {})
         })
     </script>
     <div id="content"></div>
