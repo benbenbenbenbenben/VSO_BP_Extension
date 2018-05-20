@@ -63,7 +63,7 @@ const main = async () => {
 
         Dialogs.show(Dialogs.ModalDialog, <Dialogs.IModalDialogOptions>{
             title: "Configure",
-            content: dlg.clone(),
+            content: dlg,
             okCallback: (result: any) => {
                 
             }

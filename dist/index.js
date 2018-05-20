@@ -108,7 +108,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Combos", "TFS/Versio
                     gitSelectCtrl = Controls.create(Combos.Combo, dlg, gitSelect);
                     Dialogs.show(Dialogs.ModalDialog, {
                         title: "Configure",
-                        content: dlg.clone(),
+                        content: dlg,
                         okCallback: function (result) {
                         }
                     });
