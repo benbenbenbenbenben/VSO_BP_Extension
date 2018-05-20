@@ -85,12 +85,15 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Combos", "TFS/Versio
                     dlg.append("<h2>Configure</h2>");
                     dlg.append("<h3>Project: " + projectName);
                     dlg.append("<p>Where are your business process models stored?</p>");
-                    _a = {};
+                    _a = {
+                        width: "500px"
+                    };
                     return [4 /*yield*/, gitclient.getRepositories(projectId)];
                 case 2:
                     gitSelect = (_a.source = (_b.sent()).map(function (r) { return r.name; }),
                         _a);
                     repType = {
+                        width: "500px",
                         source: [
                             "TFS",
                             "git"

@@ -41,10 +41,12 @@ const main = async () => {
         dlg.append(`<p>Where are your business process models stored?</p>`)
 
         var gitSelect = <Combos.IComboOptions>{
+            width: "500px",
             source: (await gitclient.getRepositories(projectId)).map(r => r.name)
         }
         
         var repType = <Combos.IComboOptions>{
+            width: "500px",
             source: [
                 "TFS",
                 "git"
