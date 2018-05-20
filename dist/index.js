@@ -90,7 +90,8 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Combos", "TFS/Versio
                         gitSelect = {
                             width: "400px",
                             source: gitRepos.map(function (r) { return r.name; }),
-                            enabled: gitRepos.length > 0
+                            enabled: gitRepos.length > 0,
+                            mode: "drop"
                         };
                         repType = {
                             width: "400px",
@@ -99,6 +100,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Combos", "TFS/Versio
                                 "git"
                             ],
                             value: gitRepos.length > 0 ? "git" : "TFS",
+                            mode: "drop",
                             change: function () {
                                 gitSelectCtrl.setEnabled(this.getText() == "git");
                             }

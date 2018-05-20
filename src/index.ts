@@ -43,7 +43,8 @@ const main = async () => {
         var gitSelect = <Combos.IComboOptions>{
             width: "400px",
             source: gitRepos.map(r => r.name),
-            enabled: gitRepos.length > 0
+            enabled: gitRepos.length > 0,
+            mode: "drop"
         }
         
         var repType = <Combos.IComboOptions>{
@@ -53,6 +54,7 @@ const main = async () => {
                 "git"
             ],
             value: gitRepos.length > 0 ? "git" : "TFS",
+            mode: "drop",
             change: function() {
                 gitSelectCtrl.setEnabled(this.getText() == "git")
             }
