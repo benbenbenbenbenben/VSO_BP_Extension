@@ -41,17 +41,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionControl/TfvcRestClient"], function (require, exports, GitHttpClient, TfvcRestClient) {
+define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionControl/TfvcRestClient", "VSS/Controls/Dialogs"], function (require, exports, GitHttpClient, TfvcRestClient, Dialogs) {
     "use strict";
     var _this = this;
     Object.defineProperty(exports, "__esModule", { value: true });
     // get config
     var getConfig = function () { return __awaiter(_this, void 0, void 0, function () {
-        var defaultconfig, service, savedconfig, config;
+        var defaultBaseUrl, defaultconfig, service, savedconfig, config;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    defaultBaseUrl = "https://graph.dcdc.io/extensions/VSO_BP_Extension";
                     defaultconfig = {
+                        baseUrl: defaultBaseUrl,
                         repositoryType: null,
                         repositoryId: null,
                         repositoryPath: null
@@ -68,19 +70,24 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
         });
     }); };
     var main = function () { return __awaiter(_this, void 0, void 0, function () {
-        var config, projectId, gitclient, tfclient, content, drawing;
+        var config, projectId, projectName, gitclient, tfclient;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, getConfig()];
                 case 1:
                     config = _a.sent();
                     projectId = VSS.getWebContext().project.id;
+                    projectName = VSS.getWebContext().project.name;
                     gitclient = GitHttpClient.getClient();
                     tfclient = TfvcRestClient.getClient();
                     if (config.repositoryType == null) {
-                        debugger;
-                        content = $("#content");
-                        drawing = $("<iframe>");
+                        Dialogs.show(Dialogs.ModalDialog, {
+                            title: "Configure",
+                            content: "<div class=\"dialog-content\">\n                <h2 id=\"header\">Configure Business Process</h2>\n                <p>\n                    <h3>Project: " + projectName + "</h3>\n                    <p></p>\n                </p>\n                <p>\n                    <label>Repository:</label>\n                    <input id=\"inpRepository\"/>\n                </p>\n                <p>\n                    <label>Path:</label>\n                    <input id=\"inpName\"/>\n                </p>\n            </div>",
+                            okCallback: function (result) {
+                                $("<li />").text(result).appendTo(".person-list");
+                            }
+                        });
                     }
                     return [2 /*return*/, null];
             }
