@@ -1,5 +1,6 @@
 import Utils_String = require("VSS/Utils/String")
 import Controls = require("VSS/Controls")
+import Combos = require("VSS/Controls/Combos")
 import VCContracts = require("TFS/VersionControl/Contracts")
 import GitHttpClient = require("TFS/VersionControl/GitRestClient")
 import TfvcRestClient = require("TFS/VersionControl/TfvcRestClient");
@@ -33,23 +34,31 @@ const main = async () => {
     var tfclient = TfvcRestClient.getClient()
 
     if (config.repositoryType == null) {
+
+        var dlg = $("<div>")
+        dlg.append(`<h2>Configure</h2>`)
+        dlg.append(`<h3>Project: ${projectName}`)
+        dlg.append(`<p>Where are your business process models stored?</p>`)
+
+        var gitSelect = <Combos.IComboOptions>{
+            source: await gitclient.getRepositories(projectId)
+        }
+        
+        var repType = <Combos.IComboOptions>{
+            source: [
+                "TFS",
+                "git"
+            ],
+            change: function() {
+                gitSelectCtrl.setEnabled(this.getText() == "git")
+            }
+        }
+        var repTypeCtrl = Controls.create(Combos.Combo, dlg, repType)
+        var gitSelectCtrl = Controls.create(Combos.Combo, dlg, gitSelect)
+
         Dialogs.show(Dialogs.ModalDialog, <Dialogs.IModalDialogOptions>{
             title: "Configure",
-            content: `<div class="dialog-content">
-                <h2 id="header">Configure Business Process</h2>
-                <p>
-                    <h3>Project: ${projectName}</h3>
-                    <p></p>
-                </p>
-                <p>
-                    <label>Repository:</label>
-                    <input id="inpRepository"/>
-                </p>
-                <p>
-                    <label>Path:</label>
-                    <input id="inpName"/>
-                </p>
-            </div>`,
+            content: dlg.clone(),
             okCallback: (result: any) => {
                 $("<li />").text(result).appendTo(".person-list");
             }
