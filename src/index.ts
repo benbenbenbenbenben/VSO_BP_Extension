@@ -35,18 +35,18 @@ const main = async () => {
 
     if (config.repositoryType == null) {
 
-        var dlg = $("<div>")
+        var dlg = $("<div />")
         dlg.append(`<h2>Configure</h2>`)
         dlg.append(`<h3>Project: ${projectName}`)
         dlg.append(`<p>Where are your business process models stored?</p>`)
 
         var gitSelect = <Combos.IComboOptions>{
-            width: "500px",
+            width: "400px",
             source: (await gitclient.getRepositories(projectId)).map(r => r.name)
         }
         
         var repType = <Combos.IComboOptions>{
-            width: "500px",
+            width: "400px",
             source: [
                 "TFS",
                 "git"

@@ -6,10 +6,10 @@
     <script src="sdk/scripts/VSS.SDK.js"></script>
 </head>
 <body>
-    <script type="text/javascript">VSS.init();</script>
+    <script type="text/javascript">VSS.init({ usePlatformScripts: true });</script>
     <script type="text/javascript">VSS.notifyLoadSucceeded();</script>
     <script type="text/javascript">
-        VSS.require(["dist/index"], function(app) {
+        VSS.ready(["dist/index"], function(app) {
 
         })
     </script>
