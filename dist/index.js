@@ -70,50 +70,51 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Combos", "TFS/Versio
         });
     }); };
     var main = function () { return __awaiter(_this, void 0, void 0, function () {
-        var config, projectId, projectName, gitclient, tfclient, dlg, gitSelect, _a, repType, repTypeCtrl, gitSelectCtrl;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var config, projectId, projectName, gitclient, tfclient, gitRepos, dlg, gitSelect, repType, repTypeCtrl, gitSelectCtrl;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0: return [4 /*yield*/, getConfig()];
                 case 1:
-                    config = _b.sent();
+                    config = _a.sent();
                     projectId = VSS.getWebContext().project.id;
                     projectName = VSS.getWebContext().project.name;
                     gitclient = GitHttpClient.getClient();
                     tfclient = TfvcRestClient.getClient();
-                    if (!(config.repositoryType == null)) return [3 /*break*/, 3];
-                    dlg = $("<div />");
-                    dlg.append("<h2>Configure</h2>");
-                    dlg.append("<h3>Project: " + projectName);
-                    dlg.append("<p>Where are your business process models stored?</p>");
-                    _a = {
-                        width: "400px"
-                    };
                     return [4 /*yield*/, gitclient.getRepositories(projectId)];
                 case 2:
-                    gitSelect = (_a.source = (_b.sent()).map(function (r) { return r.name; }),
-                        _a);
-                    repType = {
-                        width: "400px",
-                        source: [
-                            "TFS",
-                            "git"
-                        ],
-                        change: function () {
-                            gitSelectCtrl.setEnabled(this.getText() == "git");
-                        }
-                    };
-                    $("<label />").text("Repository Type:").appendTo(dlg);
-                    repTypeCtrl = Controls.create(Combos.Combo, dlg, repType);
-                    $("<label />").text("Repository:").appendTo(dlg);
-                    gitSelectCtrl = Controls.create(Combos.Combo, dlg, gitSelect);
-                    Dialogs.show(Dialogs.ModalDialog, {
-                        title: "Configure",
-                        content: dlg,
-                        okCallback: function (result) {
-                        }
-                    });
-                    _b.label = 3;
-                case 3: return [2 /*return*/, null];
+                    gitRepos = _a.sent();
+                    if (config.repositoryType == null) {
+                        dlg = $("<div />");
+                        dlg.append("<h3>Project: " + projectName);
+                        dlg.append("<p>Where are your business process models stored?</p>");
+                        gitSelect = {
+                            width: "400px",
+                            source: gitRepos.map(function (r) { return r.name; }),
+                            enabled: gitRepos.length > 0
+                        };
+                        repType = {
+                            width: "400px",
+                            source: [
+                                "TFS",
+                                "git"
+                            ],
+                            value: gitRepos.length > 0 ? "git" : "TFS",
+                            change: function () {
+                                gitSelectCtrl.setEnabled(this.getText() == "git");
+                            }
+                        };
+                        $("<label />").text("Repository Type:").appendTo(dlg);
+                        repTypeCtrl = Controls.create(Combos.Combo, dlg, repType);
+                        $("<label />").text("Git Repository:").appendTo(dlg);
+                        gitSelectCtrl = Controls.create(Combos.Combo, dlg, gitSelect);
+                        Dialogs.show(Dialogs.ModalDialog, {
+                            title: "Configure",
+                            content: dlg,
+                            okCallback: function (result) {
+                            }
+                        });
+                    }
+                    return [2 /*return*/, null];
             }
         });
     }); };

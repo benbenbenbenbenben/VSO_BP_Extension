@@ -32,17 +32,18 @@ const main = async () => {
     var projectName = VSS.getWebContext().project.name
     var gitclient = GitHttpClient.getClient()
     var tfclient = TfvcRestClient.getClient()
+    var gitRepos = await gitclient.getRepositories(projectId)
 
     if (config.repositoryType == null) {
 
         var dlg = $("<div />")
-        dlg.append(`<h2>Configure</h2>`)
         dlg.append(`<h3>Project: ${projectName}`)
         dlg.append(`<p>Where are your business process models stored?</p>`)
 
         var gitSelect = <Combos.IComboOptions>{
             width: "400px",
-            source: (await gitclient.getRepositories(projectId)).map(r => r.name)
+            source: gitRepos.map(r => r.name),
+            enabled: gitRepos.length > 0
         }
         
         var repType = <Combos.IComboOptions>{
@@ -51,6 +52,7 @@ const main = async () => {
                 "TFS",
                 "git"
             ],
+            value: gitRepos.length > 0 ? "git" : "TFS",
             change: function() {
                 gitSelectCtrl.setEnabled(this.getText() == "git")
             }
@@ -58,7 +60,7 @@ const main = async () => {
 
         $("<label />").text("Repository Type:").appendTo(dlg);
         var repTypeCtrl = Controls.create(Combos.Combo, dlg, repType)
-        $("<label />").text("Repository:").appendTo(dlg);
+        $("<label />").text("Git Repository:").appendTo(dlg);
         var gitSelectCtrl = Controls.create(Combos.Combo, dlg, gitSelect)
 
         Dialogs.show(Dialogs.ModalDialog, <Dialogs.IModalDialogOptions>{
