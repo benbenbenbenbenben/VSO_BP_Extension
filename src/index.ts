@@ -41,7 +41,7 @@ const main = async () => {
         dlg.append(`<p>Where are your business process models stored?</p>`)
 
         var gitSelect = <Combos.IComboOptions>{
-            source: await gitclient.getRepositories(projectId)
+            source: (await gitclient.getRepositories(projectId)).map(r => r.name)
         }
         
         var repType = <Combos.IComboOptions>{
@@ -53,7 +53,10 @@ const main = async () => {
                 gitSelectCtrl.setEnabled(this.getText() == "git")
             }
         }
+
+        $("<label />").text("Repository Type:").appendTo(dlg);
         var repTypeCtrl = Controls.create(Combos.Combo, dlg, repType)
+        $("<label />").text("Repository:").appendTo(dlg);
         var gitSelectCtrl = Controls.create(Combos.Combo, dlg, gitSelect)
 
         Dialogs.show(Dialogs.ModalDialog, <Dialogs.IModalDialogOptions>{
