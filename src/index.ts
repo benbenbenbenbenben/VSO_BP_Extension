@@ -60,7 +60,7 @@ const main = async () => {
             title: "Configure",
             content: dlg.clone(),
             okCallback: (result: any) => {
-                $("<li />").text(result).appendTo(".person-list");
+                
             }
         })
     }
