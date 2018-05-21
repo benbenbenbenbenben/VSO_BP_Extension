@@ -41,22 +41,22 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-define(["require", "exports", "VSS/Controls", "VSS/Controls/Combos", "TFS/VersionControl/GitRestClient", "TFS/VersionControl/TfvcRestClient", "VSS/Controls/Dialogs"], function (require, exports, Controls, Combos, GitHttpClient, TfvcRestClient, Dialogs) {
+define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionControl/TfvcRestClient", "VSS/Controls", "VSS/Controls/Combos", "VSS/Controls/Dialogs"], function (require, exports, GitHttpClient, TfvcRestClient, Controls, Combos, Dialogs) {
     "use strict";
     var _this = this;
     Object.defineProperty(exports, "__esModule", { value: true });
     // get config
     var getConfig = function () { return __awaiter(_this, void 0, void 0, function () {
-        var defaultBaseUrl, defaultconfig, service, savedconfig, config;
+        var defaultBaseUrl, defaultconfig, service, savedconfig;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     defaultBaseUrl = "https://graph.dcdc.io/extensions/VSO_BP_Extension";
                     defaultconfig = {
                         baseUrl: defaultBaseUrl,
-                        repositoryType: null,
                         repositoryId: null,
-                        repositoryPath: null
+                        repositoryPath: null,
+                        repositoryType: null
                     };
                     return [4 /*yield*/, VSS.getService(VSS.ServiceIds.ExtensionData)];
                 case 1:
@@ -64,13 +64,12 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Combos", "TFS/Versio
                     return [4 /*yield*/, service.getValue("global.config")];
                 case 2:
                     savedconfig = _a.sent();
-                    config = __assign({}, defaultconfig, savedconfig);
-                    return [2 /*return*/, config];
+                    return [2 /*return*/, __assign({}, defaultconfig, savedconfig)];
             }
         });
     }); };
     var main = function () { return __awaiter(_this, void 0, void 0, function () {
-        var config, projectId, projectName, gitclient, tfclient, gitRepos, dlg, gitSelect, repType, repTypeCtrl, gitSelectCtrl;
+        var config, projectId, projectName, gitclient, tfclient, gitRepos, dlg, gitSelect, repType, repTypeCtrl, gitSelectCtrl_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, getConfig()];
@@ -88,31 +87,32 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Combos", "TFS/Versio
                         dlg.append("<h3>Project: " + projectName);
                         dlg.append("<p>Where are your business process models stored?</p>");
                         gitSelect = {
-                            width: "400px",
-                            source: gitRepos.map(function (r) { return r.name; }),
                             enabled: gitRepos.length > 0,
-                            mode: "drop"
+                            mode: "drop",
+                            source: gitRepos.map(function (r) { return r.name; }),
+                            width: "400px"
                         };
                         repType = {
-                            width: "400px",
+                            mode: "drop",
                             source: [
                                 "TFS",
                                 "git"
                             ],
                             value: gitRepos.length > 0 ? "git" : "TFS",
-                            mode: "drop",
+                            width: "400px",
                             change: function () {
-                                gitSelectCtrl.setEnabled(this.getText() == "git");
+                                gitSelectCtrl_1.setEnabled(this.getText() === "git");
                             }
                         };
                         $("<label />").text("Repository Type:").appendTo(dlg);
                         repTypeCtrl = Controls.create(Combos.Combo, dlg, repType);
                         $("<label />").text("Git Repository:").appendTo(dlg);
-                        gitSelectCtrl = Controls.create(Combos.Combo, dlg, gitSelect);
+                        gitSelectCtrl_1 = Controls.create(Combos.Combo, dlg, gitSelect);
                         Dialogs.show(Dialogs.ModalDialog, {
-                            title: "Configure",
                             content: dlg,
+                            title: "Configure",
                             okCallback: function (result) {
+                                return;
                             }
                         });
                     }
