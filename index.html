@@ -6,7 +6,10 @@
     <script>
     require.config({
         onNodeCreated: function(node, config, moduleName, url) {
-            debugger
+            var hashes = {
+                "dist/index": "sha384-I5t8E/oUM6XJ54m9e9sGkE8kgG62JhIqNv9z25aSLGw4hZW1WrBqPomF2fHYXJb4"
+            }
+            // node.integrity = hashes[moduleName]
         }
     })
     </script>
