@@ -3,6 +3,13 @@
 <head>
     <title>Hello World</title>
     <script src="sdk/scripts/require.js"></script>
+    <script>
+    require.config({
+        onNodeCreated: function(node, config, moduleName, url) {
+            debugger
+        }
+    })
+    </script>
     <script src="sdk/scripts/VSS.SDK.js"></script>
 </head>
 <body>

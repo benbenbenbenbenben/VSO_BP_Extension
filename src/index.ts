@@ -64,13 +64,18 @@ const main = async () => {
         $("<label />").text("Git Repository:").appendTo(dlg);
         const gitSelectCtrl = Controls.create(Combos.Combo, dlg, gitSelect)
 
-        Dialogs.show(Dialogs.ModalDialog, {
+        const dialog = Dialogs.show(Dialogs.ModalDialog, {
             content: dlg,
             title: "Configure",
             okCallback(result: any) {
                 return
             }
         } as Dialogs.IModalDialogOptions)
+        const ele = dialog.getElement()
+        ele.on("input", "input", e => {
+            dialog.updateOkButton(true)
+        })
+
     }
 
     return null

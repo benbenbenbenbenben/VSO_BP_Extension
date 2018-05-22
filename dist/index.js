@@ -69,7 +69,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
         });
     }); };
     var main = function () { return __awaiter(_this, void 0, void 0, function () {
-        var config, projectId, projectName, gitclient, tfclient, gitRepos, dlg, gitSelect, repType, repTypeCtrl, gitSelectCtrl_1;
+        var config, projectId, projectName, gitclient, tfclient, gitRepos, dlg, gitSelect, repType, repTypeCtrl, gitSelectCtrl_1, dialog_1, ele;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, getConfig()];
@@ -108,12 +108,16 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                         repTypeCtrl = Controls.create(Combos.Combo, dlg, repType);
                         $("<label />").text("Git Repository:").appendTo(dlg);
                         gitSelectCtrl_1 = Controls.create(Combos.Combo, dlg, gitSelect);
-                        Dialogs.show(Dialogs.ModalDialog, {
+                        dialog_1 = Dialogs.show(Dialogs.ModalDialog, {
                             content: dlg,
                             title: "Configure",
                             okCallback: function (result) {
                                 return;
                             }
+                        });
+                        ele = dialog_1.getElement();
+                        ele.on("input", "input", function (e) {
+                            dialog_1.updateOkButton(true);
                         });
                     }
                     return [2 /*return*/, null];
