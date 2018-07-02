@@ -74,7 +74,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
         };
         BusinessProcess.prototype.run = function () {
             return __awaiter(this, void 0, void 0, function () {
-                var config, projectId, projectName, gitclient, tfclient, gitRepos, validate_1, dlg, gitSelect, repType_1, repTypeCtrl_1, gitSelectCtrl_1, dialog_1, ele;
+                var config, projectId, projectName, gitclient, tfclient, gitRepos, validate_1, repoId_1, dlg, gitSelect, repType, repTypeCtrl_1, gitSelectCtrl_1, dialog_1, ele;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0: return [4 /*yield*/, this.getConfig()];
@@ -88,8 +88,12 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                         case 2:
                             gitRepos = _a.sent();
                             if (config.repositoryType == null) {
-                                validate_1 = function () { return (repType_1.value === "TFS"
+                                validate_1 = function () { return (repTypeCtrl_1.getValue() === "TFS"
                                     || (repTypeCtrl_1.getValue() === "git" && gitRepos.some(function (x) { return x.name === gitSelectCtrl_1.getValue(); }))); };
+                                repoId_1 = function () {
+                                    var r = gitRepos.find(function (x) { return x.name === gitSelectCtrl_1.getValue(); });
+                                    return r == null ? null : r.id;
+                                };
                                 dlg = $("<div />");
                                 dlg.append("<h3>Project: " + projectName);
                                 dlg.append("<p>Where are your business process models stored?</p>");
@@ -100,13 +104,13 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                     width: "400px",
                                     change: function () {
                                         dialog_1.setDialogResult({
-                                            repositoryId: gitRepos.find(function (x) { return x.name === gitSelectCtrl_1.getValue(); }).id,
+                                            repositoryId: repoId_1,
                                             repositoryType: repTypeCtrl_1.getValue()
                                         });
                                         dialog_1.updateOkButton(validate_1());
                                     }
                                 };
-                                repType_1 = {
+                                repType = {
                                     mode: "drop",
                                     source: [
                                         "TFS",
@@ -117,14 +121,14 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                     change: function () {
                                         gitSelectCtrl_1.setEnabled(this.getText() === "git");
                                         dialog_1.setDialogResult({
-                                            repositoryId: gitRepos.find(function (x) { return x.name === gitSelectCtrl_1.getValue(); }).id,
+                                            repositoryId: repoId_1,
                                             repositoryType: repTypeCtrl_1.getValue()
                                         });
                                         dialog_1.updateOkButton(validate_1());
                                     }
                                 };
                                 $("<label />").text("Repository Type:").appendTo(dlg);
-                                repTypeCtrl_1 = Controls.create(Combos.Combo, dlg, repType_1);
+                                repTypeCtrl_1 = Controls.create(Combos.Combo, dlg, repType);
                                 $("<label />").text("Git Repository:").appendTo(dlg);
                                 gitSelectCtrl_1 = Controls.create(Combos.Combo, dlg, gitSelect);
                                 dialog_1 = Dialogs.show(Dialogs.ModalDialog, {
