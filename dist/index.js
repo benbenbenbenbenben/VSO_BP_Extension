@@ -74,7 +74,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
         };
         BusinessProcess.prototype.run = function () {
             return __awaiter(this, void 0, void 0, function () {
-                var config, projectId, projectName, gitclient, tfclient, gitRepos, validate_1, dlg, gitSelect_1, repType_1, repTypeCtrl, gitSelectCtrl_1, dialog_1, ele;
+                var config, projectId, projectName, gitclient, tfclient, gitRepos, validate_1, dlg, gitSelect, repType_1, repTypeCtrl_1, gitSelectCtrl_1, dialog_1, ele;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0: return [4 /*yield*/, this.getConfig()];
@@ -89,11 +89,11 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                             gitRepos = _a.sent();
                             if (config.repositoryType == null) {
                                 validate_1 = function () { return (repType_1.value === "TFS"
-                                    || (repType_1.value === "git" && gitRepos.some(function (x) { return x.name === gitSelect_1.value; }))); };
+                                    || (repTypeCtrl_1.getValue() === "git" && gitRepos.some(function (x) { return x.name === gitSelectCtrl_1.getValue(); }))); };
                                 dlg = $("<div />");
                                 dlg.append("<h3>Project: " + projectName);
                                 dlg.append("<p>Where are your business process models stored?</p>");
-                                gitSelect_1 = {
+                                gitSelect = {
                                     enabled: gitRepos.length > 0,
                                     mode: "drop",
                                     source: gitRepos.map(function (r) { return r.name; }),
@@ -101,7 +101,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                     change: function () {
                                         dialog_1.setDialogResult({
                                             repositoryId: gitRepos.find(function (x) { return x.name === gitSelectCtrl_1.getValue(); }).id,
-                                            repositoryType: repType_1.value
+                                            repositoryType: repTypeCtrl_1.getValue()
                                         });
                                         dialog_1.updateOkButton(validate_1());
                                     }
@@ -118,15 +118,15 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                         gitSelectCtrl_1.setEnabled(this.getText() === "git");
                                         dialog_1.setDialogResult({
                                             repositoryId: gitRepos.find(function (x) { return x.name === gitSelectCtrl_1.getValue(); }).id,
-                                            repositoryType: repType_1.value
+                                            repositoryType: repTypeCtrl_1.getValue()
                                         });
                                         dialog_1.updateOkButton(validate_1());
                                     }
                                 };
                                 $("<label />").text("Repository Type:").appendTo(dlg);
-                                repTypeCtrl = Controls.create(Combos.Combo, dlg, repType_1);
+                                repTypeCtrl_1 = Controls.create(Combos.Combo, dlg, repType_1);
                                 $("<label />").text("Git Repository:").appendTo(dlg);
-                                gitSelectCtrl_1 = Controls.create(Combos.Combo, dlg, gitSelect_1);
+                                gitSelectCtrl_1 = Controls.create(Combos.Combo, dlg, gitSelect);
                                 dialog_1 = Dialogs.show(Dialogs.ModalDialog, {
                                     content: dlg,
                                     title: "Configure",

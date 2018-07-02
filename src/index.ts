@@ -38,7 +38,7 @@ export class BusinessProcess {
         if (config.repositoryType == null) {
 
             const validate = () => (repType.value === "TFS"
-                || (repType.value === "git" && gitRepos.some(x => x.name === gitSelect.value)))
+                || (repTypeCtrl.getValue() === "git" && gitRepos.some(x => x.name === gitSelectCtrl.getValue())))
 
             const dlg = $("<div />")
             dlg.append(`<h3>Project: ${projectName}`)
@@ -52,7 +52,7 @@ export class BusinessProcess {
                 change() {
                     dialog.setDialogResult({
                         repositoryId: gitRepos.find(x => x.name === gitSelectCtrl.getValue()).id,
-                        repositoryType: repType.value
+                        repositoryType: repTypeCtrl.getValue()
                     })
                     dialog.updateOkButton(validate())
                 }
@@ -70,7 +70,7 @@ export class BusinessProcess {
                     gitSelectCtrl.setEnabled(this.getText() === "git")
                     dialog.setDialogResult({
                         repositoryId: gitRepos.find(x => x.name === gitSelectCtrl.getValue()).id,
-                        repositoryType: repType.value
+                        repositoryType: repTypeCtrl.getValue()
                     })
                     dialog.updateOkButton(validate())
                 }
