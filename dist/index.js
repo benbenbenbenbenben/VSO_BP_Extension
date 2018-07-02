@@ -47,6 +47,20 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
     var BusinessProcess = /** @class */ (function () {
         function BusinessProcess() {
         }
+        Object.defineProperty(BusinessProcess.prototype, "projectId", {
+            get: function () {
+                return VSS.getWebContext().project.id;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BusinessProcess.prototype, "projectName", {
+            get: function () {
+                return VSS.getWebContext().project.name;
+            },
+            enumerable: true,
+            configurable: true
+        });
         // get config
         BusinessProcess.prototype.getConfig = function () {
             return __awaiter(this, void 0, void 0, function () {
@@ -64,7 +78,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                             return [4 /*yield*/, VSS.getService(VSS.ServiceIds.ExtensionData)];
                         case 1:
                             service = _a.sent();
-                            return [4 /*yield*/, service.getValue("global_config")];
+                            return [4 /*yield*/, service.getValue("global_" + this.projectId)];
                         case 2:
                             savedconfig = _a.sent();
                             return [2 /*return*/, __assign({}, defaultconfig, savedconfig)];
@@ -80,7 +94,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                         case 0: return [4 /*yield*/, VSS.getService(VSS.ServiceIds.ExtensionData)];
                         case 1:
                             service = _a.sent();
-                            return [4 /*yield*/, service.setValue("global_config", config)];
+                            return [4 /*yield*/, service.setValue("global_" + this.projectId, config)];
                         case 2:
                             _a.sent();
                             return [2 /*return*/];
@@ -90,7 +104,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
         };
         BusinessProcess.prototype.run = function () {
             return __awaiter(this, void 0, void 0, function () {
-                var self, config, projectId, projectName, gitclient, tfclient, gitRepos, validate_1, repoId_1, dlg, gitSelect, repType, repTypeCtrl_1, gitSelectCtrl_1, dialog_1, ele;
+                var self, config, gitclient, tfclient, gitRepos, validate_1, repoId_1, dlg, gitSelect, repType, repTypeCtrl_1, gitSelectCtrl_1, dialog_1, ele;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -98,11 +112,9 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                             return [4 /*yield*/, this.getConfig()];
                         case 1:
                             config = _a.sent();
-                            projectId = VSS.getWebContext().project.id;
-                            projectName = VSS.getWebContext().project.name;
                             gitclient = GitHttpClient.getClient();
                             tfclient = TfvcRestClient.getClient();
-                            return [4 /*yield*/, gitclient.getRepositories(projectId)];
+                            return [4 /*yield*/, gitclient.getRepositories(this.projectId)];
                         case 2:
                             gitRepos = _a.sent();
                             if (config.repositoryType == null) {
@@ -113,7 +125,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                     return r == null ? null : r.id;
                                 };
                                 dlg = $("<div />");
-                                dlg.append("<h3>Project: " + projectName);
+                                dlg.append("<h3>Project: " + this.projectName);
                                 dlg.append("<p>Where are your business process models stored?</p>");
                                 gitSelect = {
                                     enabled: gitRepos.length > 0,

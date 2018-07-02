@@ -13,6 +13,12 @@ import Utils_String = require("VSS/Utils/String")
 
 export class BusinessProcess {
 
+    public get projectId(): string {
+        return VSS.getWebContext().project.id
+    }
+    public get projectName(): string {
+        return VSS.getWebContext().project.name
+    }
     // get config
     public async getConfig() {
         const defaultBaseUrl = "https://graph.dcdc.io/extensions/VSO_BP_Extension"
@@ -23,23 +29,21 @@ export class BusinessProcess {
             repositoryType: null
         }
         const service = await VSS.getService<ExtensionDataService>(VSS.ServiceIds.ExtensionData)
-        const savedconfig = await service.getValue("global_config")
+        const savedconfig = await service.getValue("global_" + this.projectId)
         return { ...defaultconfig, ...savedconfig }
     }
 
     public async setConfig(config) {
         const service = await VSS.getService<ExtensionDataService>(VSS.ServiceIds.ExtensionData)
-        await service.setValue("global_config", config)
+        await service.setValue("global_" + this.projectId, config)
     }
 
     public async run() {
         const self = this
         let config = await this.getConfig()
-        const projectId = VSS.getWebContext().project.id
-        const projectName = VSS.getWebContext().project.name
         const gitclient = GitHttpClient.getClient()
         const tfclient = TfvcRestClient.getClient()
-        const gitRepos = await gitclient.getRepositories(projectId)
+        const gitRepos = await gitclient.getRepositories(this.projectId)
 
         if (config.repositoryType == null) {
 
@@ -52,7 +56,7 @@ export class BusinessProcess {
             }
 
             const dlg = $("<div />")
-            dlg.append(`<h3>Project: ${projectName}`)
+            dlg.append(`<h3>Project: ${this.projectName}`)
             dlg.append(`<p>Where are your business process models stored?</p>`)
 
             const gitSelect = {
