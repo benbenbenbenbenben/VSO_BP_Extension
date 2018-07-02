@@ -104,7 +104,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
         };
         BusinessProcess.prototype.run = function () {
             return __awaiter(this, void 0, void 0, function () {
-                var self, config, gitclient, tfclient, gitRepos, validate_1, repoId_1, dlg, gitSelect, repType, repTypeCtrl_1, gitSelectCtrl_1, dialog_1, ele;
+                var self, config, gitclient, tfclient, gitRepos;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -117,70 +117,89 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                             return [4 /*yield*/, gitclient.getRepositories(this.projectId)];
                         case 2:
                             gitRepos = _a.sent();
-                            if (config.repositoryType == null) {
-                                validate_1 = function () { return (repTypeCtrl_1.getValue() === "TFS"
-                                    || (repTypeCtrl_1.getValue() === "git" && gitRepos.some(function (x) { return x.name === gitSelectCtrl_1.getValue(); }))); };
-                                repoId_1 = function () {
-                                    var r = gitRepos.find(function (x) { return x.name === gitSelectCtrl_1.getValue(); });
-                                    return r == null ? null : r.id;
-                                };
-                                dlg = $("<div />");
-                                dlg.append("<h3>Project: " + this.projectName);
-                                dlg.append("<p>Where are your business process models stored?</p>");
-                                gitSelect = {
-                                    enabled: gitRepos.length > 0,
-                                    mode: "drop",
-                                    source: gitRepos.map(function (r) { return r.name; }),
-                                    width: "400px",
-                                    change: function () {
-                                        dialog_1.setDialogResult({
-                                            repositoryId: repoId_1(),
-                                            repositoryType: repTypeCtrl_1.getValue()
-                                        });
-                                        dialog_1.updateOkButton(validate_1());
-                                    }
-                                };
-                                repType = {
-                                    mode: "drop",
-                                    source: [
-                                        "TFS",
-                                        "git"
-                                    ],
-                                    value: gitRepos.length > 0 ? "git" : "TFS",
-                                    width: "400px",
-                                    change: function () {
-                                        gitSelectCtrl_1.setEnabled(this.getText() === "git");
-                                        dialog_1.setDialogResult({
-                                            repositoryId: repoId_1(),
-                                            repositoryType: repTypeCtrl_1.getValue()
-                                        });
-                                        dialog_1.updateOkButton(validate_1());
-                                    }
-                                };
-                                $("<label />").text("Repository Type:").appendTo(dlg);
-                                repTypeCtrl_1 = Controls.create(Combos.Combo, dlg, repType);
-                                $("<label />").text("Git Repository:").appendTo(dlg);
-                                gitSelectCtrl_1 = Controls.create(Combos.Combo, dlg, gitSelect);
-                                dialog_1 = Dialogs.show(Dialogs.ModalDialog, {
-                                    content: dlg,
-                                    title: "Configure",
-                                    okCallback: function (result) {
-                                        return __awaiter(this, void 0, void 0, function () {
-                                            return __generator(this, function (_a) {
-                                                config = __assign({}, config, result);
-                                                self.setConfig(config);
-                                                return [2 /*return*/];
-                                            });
-                                        });
-                                    }
-                                });
-                                ele = dialog_1.getElement();
-                                ele.on("input", "input", function (e) {
-                                    dialog_1.updateOkButton(validate_1());
-                                });
-                            }
-                            return [2 /*return*/, null];
+                            if (!(config.repositoryType == null)) return [3 /*break*/, 4];
+                            return [4 /*yield*/, this.promptForConfig(gitRepos, config)];
+                        case 3:
+                            config = _a.sent();
+                            _a.label = 4;
+                        case 4:
+                            // tslint:disable-next-line:no-console
+                            console.log("loaded BPM config: ", config);
+                            return [2 /*return*/];
                     }
+                });
+            });
+        };
+        BusinessProcess.prototype.promptForConfig = function (gitRepos, config) {
+            return __awaiter(this, void 0, void 0, function () {
+                var _this = this;
+                var self;
+                return __generator(this, function (_a) {
+                    self = this;
+                    return [2 /*return*/, new Promise(function (resolve, reject) {
+                            var validate = function () { return (repTypeCtrl.getValue() === "TFS"
+                                || (repTypeCtrl.getValue() === "git" && gitRepos.some(function (x) { return x.name === gitSelectCtrl.getValue(); }))); };
+                            var repoId = function () {
+                                var r = gitRepos.find(function (x) { return x.name === gitSelectCtrl.getValue(); });
+                                return r == null ? null : r.id;
+                            };
+                            var dlg = $("<div />");
+                            dlg.append("<h3>Project: " + _this.projectName);
+                            dlg.append("<p>Where are your business process models stored?</p>");
+                            var gitSelect = {
+                                enabled: gitRepos.length > 0,
+                                mode: "drop",
+                                source: gitRepos.map(function (r) { return r.name; }),
+                                width: "400px",
+                                change: function () {
+                                    dialog.setDialogResult({
+                                        repositoryId: repoId(),
+                                        repositoryType: repTypeCtrl.getValue()
+                                    });
+                                    dialog.updateOkButton(validate());
+                                }
+                            };
+                            var repType = {
+                                mode: "drop",
+                                source: [
+                                    "TFS",
+                                    "git"
+                                ],
+                                value: gitRepos.length > 0 ? "git" : "TFS",
+                                width: "400px",
+                                change: function () {
+                                    gitSelectCtrl.setEnabled(this.getText() === "git");
+                                    dialog.setDialogResult({
+                                        repositoryId: repoId(),
+                                        repositoryType: repTypeCtrl.getValue()
+                                    });
+                                    dialog.updateOkButton(validate());
+                                }
+                            };
+                            $("<label />").text("Repository Type:").appendTo(dlg);
+                            var repTypeCtrl = Controls.create(Combos.Combo, dlg, repType);
+                            $("<label />").text("Git Repository:").appendTo(dlg);
+                            var gitSelectCtrl = Controls.create(Combos.Combo, dlg, gitSelect);
+                            var dialog = Dialogs.show(Dialogs.ModalDialog, {
+                                close: reject,
+                                content: dlg,
+                                title: "Configure",
+                                okCallback: function (result) {
+                                    return __awaiter(this, void 0, void 0, function () {
+                                        return __generator(this, function (_a) {
+                                            config = __assign({}, config, result);
+                                            self.setConfig(config);
+                                            resolve(config);
+                                            return [2 /*return*/];
+                                        });
+                                    });
+                                }
+                            });
+                            var ele = dialog.getElement();
+                            ele.on("input", "input", function (e) {
+                                dialog.updateOkButton(validate());
+                            });
+                        })];
                 });
             });
         };

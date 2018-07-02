@@ -46,19 +46,30 @@ export class BusinessProcess {
         const gitRepos = await gitclient.getRepositories(this.projectId)
 
         if (config.repositoryType == null) {
+            config = await this.promptForConfig(gitRepos, config);
+        }
+        // tslint:disable-next-line:no-console
+        console.log("loaded BPM config: ", config)
+    }
 
+    private async promptForConfig(gitRepos: VCContracts.GitRepository[], config: {
+            baseUrl: string; repositoryId: any; repositoryPath: any; repositoryType: any;
+        }): Promise<{baseUrl: string, repositoryId: string, repositoryPath: string, repositoryType: string}> {
+
+        const self = this
+        return new Promise<{baseUrl: string,
+            repositoryId: string,
+            repositoryPath: string,
+            repositoryType: string}>((resolve, reject) => {
             const validate = () => (repTypeCtrl.getValue() === "TFS"
-                || (repTypeCtrl.getValue() === "git" && gitRepos.some(x => x.name === gitSelectCtrl.getValue())))
-
+                || (repTypeCtrl.getValue() === "git" && gitRepos.some(x => x.name === gitSelectCtrl.getValue())));
             const repoId = () => {
-                const r = gitRepos.find(x => x.name === gitSelectCtrl.getValue())
-                return r == null ? null : r.id
-            }
-
-            const dlg = $("<div />")
-            dlg.append(`<h3>Project: ${this.projectName}`)
-            dlg.append(`<p>Where are your business process models stored?</p>`)
-
+                const r = gitRepos.find(x => x.name === gitSelectCtrl.getValue());
+                return r == null ? null : r.id;
+            };
+            const dlg = $("<div />");
+            dlg.append(`<h3>Project: ${this.projectName}`);
+            dlg.append(`<p>Where are your business process models stored?</p>`);
             const gitSelect = {
                 enabled: gitRepos.length > 0,
                 mode: "drop",
@@ -68,11 +79,10 @@ export class BusinessProcess {
                     dialog.setDialogResult({
                         repositoryId: repoId(),
                         repositoryType: repTypeCtrl.getValue()
-                    })
-                    dialog.updateOkButton(validate())
+                    });
+                    dialog.updateOkButton(validate());
                 }
-            } as Combos.IComboOptions
-
+            } as Combos.IComboOptions;
             const repType = {
                 mode: "drop",
                 source: [
@@ -82,36 +92,33 @@ export class BusinessProcess {
                 value: gitRepos.length > 0 ? "git" : "TFS",
                 width: "400px",
                 change() {
-                    gitSelectCtrl.setEnabled(this.getText() === "git")
+                    gitSelectCtrl.setEnabled(this.getText() === "git");
                     dialog.setDialogResult({
                         repositoryId: repoId(),
                         repositoryType: repTypeCtrl.getValue()
-                    })
-                    dialog.updateOkButton(validate())
+                    });
+                    dialog.updateOkButton(validate());
                 }
-            } as Combos.IComboOptions
-
+            } as Combos.IComboOptions;
             $("<label />").text("Repository Type:").appendTo(dlg);
-            const repTypeCtrl = Controls.create(Combos.Combo, dlg, repType)
+            const repTypeCtrl = Controls.create(Combos.Combo, dlg, repType);
             $("<label />").text("Git Repository:").appendTo(dlg);
-            const gitSelectCtrl = Controls.create(Combos.Combo, dlg, gitSelect)
-
+            const gitSelectCtrl = Controls.create(Combos.Combo, dlg, gitSelect);
             const dialog = Dialogs.show(Dialogs.ModalDialog, {
+                close: reject,
                 content: dlg,
                 title: "Configure",
                 async okCallback(result: any) {
-                    config = {...config, ...result}
-                    self.setConfig(config)
+                    config = { ...config, ...result };
+                    self.setConfig(config);
+                    resolve(config)
                 }
-            } as Dialogs.IModalDialogOptions)
-            const ele = dialog.getElement()
+            } as Dialogs.IModalDialogOptions);
+            const ele = dialog.getElement();
             ele.on("input", "input", e => {
-                dialog.updateOkButton(validate())
-            })
-
-        }
-
-        return null
+                dialog.updateOkButton(validate());
+            });
+        })
     }
 }
 
