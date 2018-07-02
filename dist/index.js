@@ -100,7 +100,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                     width: "400px",
                                     change: function () {
                                         dialog_1.setDialogResult({
-                                            repositoryId: gitRepos.find(function (x) { return x.name === gitSelect_1.value; }).id,
+                                            repositoryId: gitRepos.find(function (x) { return x.name === gitSelectCtrl_1.getValue(); }).id,
                                             repositoryType: repType_1.value
                                         });
                                         dialog_1.updateOkButton(validate_1());
@@ -117,7 +117,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                     change: function () {
                                         gitSelectCtrl_1.setEnabled(this.getText() === "git");
                                         dialog_1.setDialogResult({
-                                            repositoryId: gitRepos.find(function (x) { return x.name === gitSelect_1.value; }).id,
+                                            repositoryId: gitRepos.find(function (x) { return x.name === gitSelectCtrl_1.getValue(); }).id,
                                             repositoryType: repType_1.value
                                         });
                                         dialog_1.updateOkButton(validate_1());

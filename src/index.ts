@@ -51,7 +51,7 @@ export class BusinessProcess {
                 width: "400px",
                 change() {
                     dialog.setDialogResult({
-                        repositoryId: gitRepos.find(x => x.name === gitSelect.value).id,
+                        repositoryId: gitRepos.find(x => x.name === gitSelectCtrl.getValue()).id,
                         repositoryType: repType.value
                     })
                     dialog.updateOkButton(validate())
@@ -69,7 +69,7 @@ export class BusinessProcess {
                 change() {
                     gitSelectCtrl.setEnabled(this.getText() === "git")
                     dialog.setDialogResult({
-                        repositoryId: gitRepos.find(x => x.name === gitSelect.value).id,
+                        repositoryId: gitRepos.find(x => x.name === gitSelectCtrl.getValue()).id,
                         repositoryType: repType.value
                     })
                     dialog.updateOkButton(validate())
