@@ -43,87 +43,116 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionControl/TfvcRestClient", "VSS/Controls", "VSS/Controls/Combos", "VSS/Controls/Dialogs"], function (require, exports, GitHttpClient, TfvcRestClient, Controls, Combos, Dialogs) {
     "use strict";
-    var _this = this;
     Object.defineProperty(exports, "__esModule", { value: true });
-    // get config
-    var getConfig = function () { return __awaiter(_this, void 0, void 0, function () {
-        var defaultBaseUrl, defaultconfig, service, savedconfig;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    defaultBaseUrl = "https://graph.dcdc.io/extensions/VSO_BP_Extension";
-                    defaultconfig = {
-                        baseUrl: defaultBaseUrl,
-                        repositoryId: null,
-                        repositoryPath: null,
-                        repositoryType: null
-                    };
-                    return [4 /*yield*/, VSS.getService(VSS.ServiceIds.ExtensionData)];
-                case 1:
-                    service = _a.sent();
-                    return [4 /*yield*/, service.getValue("global.config")];
-                case 2:
-                    savedconfig = _a.sent();
-                    return [2 /*return*/, __assign({}, defaultconfig, savedconfig)];
-            }
-        });
-    }); };
-    var main = function () { return __awaiter(_this, void 0, void 0, function () {
-        var config, projectId, projectName, gitclient, tfclient, gitRepos, dlg, gitSelect, repType, repTypeCtrl, gitSelectCtrl_1, dialog_1, ele;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, getConfig()];
-                case 1:
-                    config = _a.sent();
-                    projectId = VSS.getWebContext().project.id;
-                    projectName = VSS.getWebContext().project.name;
-                    gitclient = GitHttpClient.getClient();
-                    tfclient = TfvcRestClient.getClient();
-                    return [4 /*yield*/, gitclient.getRepositories(projectId)];
-                case 2:
-                    gitRepos = _a.sent();
-                    if (config.repositoryType == null) {
-                        dlg = $("<div />");
-                        dlg.append("<h3>Project: " + projectName);
-                        dlg.append("<p>Where are your business process models stored?</p>");
-                        gitSelect = {
-                            enabled: gitRepos.length > 0,
-                            mode: "drop",
-                            source: gitRepos.map(function (r) { return r.name; }),
-                            width: "400px"
-                        };
-                        repType = {
-                            mode: "drop",
-                            source: [
-                                "TFS",
-                                "git"
-                            ],
-                            value: gitRepos.length > 0 ? "git" : "TFS",
-                            width: "400px",
-                            change: function () {
-                                gitSelectCtrl_1.setEnabled(this.getText() === "git");
-                            }
-                        };
-                        $("<label />").text("Repository Type:").appendTo(dlg);
-                        repTypeCtrl = Controls.create(Combos.Combo, dlg, repType);
-                        $("<label />").text("Git Repository:").appendTo(dlg);
-                        gitSelectCtrl_1 = Controls.create(Combos.Combo, dlg, gitSelect);
-                        dialog_1 = Dialogs.show(Dialogs.ModalDialog, {
-                            content: dlg,
-                            title: "Configure",
-                            okCallback: function (result) {
-                                return;
-                            }
-                        });
-                        ele = dialog_1.getElement();
-                        ele.on("input", "input", function (e) {
-                            dialog_1.updateOkButton(true);
-                        });
+    var BusinessProcess = /** @class */ (function () {
+        function BusinessProcess() {
+        }
+        // get config
+        BusinessProcess.prototype.getConfig = function () {
+            return __awaiter(this, void 0, void 0, function () {
+                var defaultBaseUrl, defaultconfig, service, savedconfig;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            defaultBaseUrl = "https://graph.dcdc.io/extensions/VSO_BP_Extension";
+                            defaultconfig = {
+                                baseUrl: defaultBaseUrl,
+                                repositoryId: null,
+                                repositoryPath: null,
+                                repositoryType: null
+                            };
+                            return [4 /*yield*/, VSS.getService(VSS.ServiceIds.ExtensionData)];
+                        case 1:
+                            service = _a.sent();
+                            return [4 /*yield*/, service.getValue("global.config")];
+                        case 2:
+                            savedconfig = _a.sent();
+                            return [2 /*return*/, __assign({}, defaultconfig, savedconfig)];
                     }
-                    return [2 /*return*/, null];
-            }
-        });
-    }); };
-    main();
+                });
+            });
+        };
+        BusinessProcess.prototype.run = function () {
+            return __awaiter(this, void 0, void 0, function () {
+                var config, projectId, projectName, gitclient, tfclient, gitRepos, validate_1, dlg, gitSelect_1, repType_1, repTypeCtrl, gitSelectCtrl_1, dialog_1, ele;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.getConfig()];
+                        case 1:
+                            config = _a.sent();
+                            projectId = VSS.getWebContext().project.id;
+                            projectName = VSS.getWebContext().project.name;
+                            gitclient = GitHttpClient.getClient();
+                            tfclient = TfvcRestClient.getClient();
+                            return [4 /*yield*/, gitclient.getRepositories(projectId)];
+                        case 2:
+                            gitRepos = _a.sent();
+                            if (config.repositoryType == null) {
+                                validate_1 = function () { return (repType_1.value === "TFS"
+                                    || (repType_1.value === "git" && gitRepos.some(function (x) { return x.name === gitSelect_1.value; }))); };
+                                dlg = $("<div />");
+                                dlg.append("<h3>Project: " + projectName);
+                                dlg.append("<p>Where are your business process models stored?</p>");
+                                gitSelect_1 = {
+                                    enabled: gitRepos.length > 0,
+                                    mode: "drop",
+                                    source: gitRepos.map(function (r) { return r.name; }),
+                                    width: "400px",
+                                    change: function () {
+                                        dialog_1.setDialogResult({
+                                            repositoryId: gitRepos.find(function (x) { return x.name === gitSelect_1.value; }).id,
+                                            repositoryType: repType_1.value
+                                        });
+                                        dialog_1.updateOkButton(validate_1());
+                                    }
+                                };
+                                repType_1 = {
+                                    mode: "drop",
+                                    source: [
+                                        "TFS",
+                                        "git"
+                                    ],
+                                    value: gitRepos.length > 0 ? "git" : "TFS",
+                                    width: "400px",
+                                    change: function () {
+                                        gitSelectCtrl_1.setEnabled(this.getText() === "git");
+                                        dialog_1.setDialogResult({
+                                            repositoryId: gitRepos.find(function (x) { return x.name === gitSelect_1.value; }).id,
+                                            repositoryType: repType_1.value
+                                        });
+                                        dialog_1.updateOkButton(validate_1());
+                                    }
+                                };
+                                $("<label />").text("Repository Type:").appendTo(dlg);
+                                repTypeCtrl = Controls.create(Combos.Combo, dlg, repType_1);
+                                $("<label />").text("Git Repository:").appendTo(dlg);
+                                gitSelectCtrl_1 = Controls.create(Combos.Combo, dlg, gitSelect_1);
+                                dialog_1 = Dialogs.show(Dialogs.ModalDialog, {
+                                    content: dlg,
+                                    title: "Configure",
+                                    okCallback: function (result) {
+                                        return __awaiter(this, void 0, void 0, function () {
+                                            return __generator(this, function (_a) {
+                                                config = __assign({}, config, result);
+                                                return [2 /*return*/];
+                                            });
+                                        });
+                                    }
+                                });
+                                ele = dialog_1.getElement();
+                                ele.on("input", "input", function (e) {
+                                    dialog_1.updateOkButton(validate_1());
+                                });
+                            }
+                            return [2 /*return*/, null];
+                    }
+                });
+            });
+        };
+        return BusinessProcess;
+    }());
+    exports.BusinessProcess = BusinessProcess;
+    var bp = new BusinessProcess();
+    bp.run();
 });
 //# sourceMappingURL=index.js.map

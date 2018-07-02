@@ -48,7 +48,14 @@ export class BusinessProcess {
                 enabled: gitRepos.length > 0,
                 mode: "drop",
                 source: gitRepos.map(r => r.name),
-                width: "400px"
+                width: "400px",
+                change() {
+                    dialog.setDialogResult({
+                        repositoryId: gitRepos.find(x => x.name === gitSelect.value).id,
+                        repositoryType: repType.value
+                    })
+                    dialog.updateOkButton(validate())
+                }
             } as Combos.IComboOptions
 
             const repType = {
@@ -61,6 +68,11 @@ export class BusinessProcess {
                 width: "400px",
                 change() {
                     gitSelectCtrl.setEnabled(this.getText() === "git")
+                    dialog.setDialogResult({
+                        repositoryId: gitRepos.find(x => x.name === gitSelect.value).id,
+                        repositoryType: repType.value
+                    })
+                    dialog.updateOkButton(validate())
                 }
             } as Combos.IComboOptions
 
@@ -78,10 +90,6 @@ export class BusinessProcess {
             } as Dialogs.IModalDialogOptions)
             const ele = dialog.getElement()
             ele.on("input", "input", e => {
-                dialog.setDialogResult({
-                    repositoryId: gitRepos.find(x => x.name === gitSelect.value).id,
-                    repositoryType: repType.value
-                })
                 dialog.updateOkButton(validate())
             })
 
