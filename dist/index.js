@@ -104,7 +104,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
         };
         BusinessProcess.prototype.run = function () {
             return __awaiter(this, void 0, void 0, function () {
-                var self, config, gitclient, tfclient, gitRepos;
+                var self, config, gitclient, tfclient, gitRepos, files;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -125,7 +125,16 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                         case 4:
                             // tslint:disable-next-line:no-console
                             console.log("loaded BPM config: ", config);
-                            return [2 /*return*/];
+                            if (!(config.repositoryType === "git")) return [3 /*break*/, 6];
+                            return [4 /*yield*/, gitclient.getFilePaths(this.projectId, config.repositoryId, config.repositoryPath)
+                                // tslint:disable-next-line:no-console
+                            ];
+                        case 5:
+                            files = _a.sent();
+                            // tslint:disable-next-line:no-console
+                            console.log(files);
+                            _a.label = 6;
+                        case 6: return [2 /*return*/];
                     }
                 });
             });

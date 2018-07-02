@@ -50,6 +50,12 @@ export class BusinessProcess {
         }
         // tslint:disable-next-line:no-console
         console.log("loaded BPM config: ", config)
+
+        if (config.repositoryType === "git") {
+            const files = await gitclient.getFilePaths(this.projectId, config.repositoryId, config.repositoryPath)
+            // tslint:disable-next-line:no-console
+            console.log(files)
+        }
     }
 
     private async promptForConfig(gitRepos: VCContracts.GitRepository[], config: {
