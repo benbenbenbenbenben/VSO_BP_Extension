@@ -23,11 +23,17 @@ export class BusinessProcess {
             repositoryType: null
         }
         const service = await VSS.getService<ExtensionDataService>(VSS.ServiceIds.ExtensionData)
-        const savedconfig = await service.getValue("global.config")
+        const savedconfig = await service.getValue("global_config")
         return { ...defaultconfig, ...savedconfig }
     }
 
+    public async setConfig(config) {
+        const service = await VSS.getService<ExtensionDataService>(VSS.ServiceIds.ExtensionData)
+        await service.setValue("global_config", config)
+    }
+
     public async run() {
+        const self = this
         let config = await this.getConfig()
         const projectId = VSS.getWebContext().project.id
         const projectName = VSS.getWebContext().project.name
@@ -56,7 +62,7 @@ export class BusinessProcess {
                 width: "400px",
                 change() {
                     dialog.setDialogResult({
-                        repositoryId: repoId,
+                        repositoryId: repoId(),
                         repositoryType: repTypeCtrl.getValue()
                     })
                     dialog.updateOkButton(validate())
@@ -74,7 +80,7 @@ export class BusinessProcess {
                 change() {
                     gitSelectCtrl.setEnabled(this.getText() === "git")
                     dialog.setDialogResult({
-                        repositoryId: repoId,
+                        repositoryId: repoId(),
                         repositoryType: repTypeCtrl.getValue()
                     })
                     dialog.updateOkButton(validate())
@@ -91,6 +97,7 @@ export class BusinessProcess {
                 title: "Configure",
                 async okCallback(result: any) {
                     config = {...config, ...result}
+                    self.setConfig(config)
                 }
             } as Dialogs.IModalDialogOptions)
             const ele = dialog.getElement()

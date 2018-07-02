@@ -64,7 +64,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                             return [4 /*yield*/, VSS.getService(VSS.ServiceIds.ExtensionData)];
                         case 1:
                             service = _a.sent();
-                            return [4 /*yield*/, service.getValue("global.config")];
+                            return [4 /*yield*/, service.getValue("global_config")];
                         case 2:
                             savedconfig = _a.sent();
                             return [2 /*return*/, __assign({}, defaultconfig, savedconfig)];
@@ -72,12 +72,30 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                 });
             });
         };
-        BusinessProcess.prototype.run = function () {
+        BusinessProcess.prototype.setConfig = function (config) {
             return __awaiter(this, void 0, void 0, function () {
-                var config, projectId, projectName, gitclient, tfclient, gitRepos, validate_1, repoId_1, dlg, gitSelect, repType, repTypeCtrl_1, gitSelectCtrl_1, dialog_1, ele;
+                var service;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.getConfig()];
+                        case 0: return [4 /*yield*/, VSS.getService(VSS.ServiceIds.ExtensionData)];
+                        case 1:
+                            service = _a.sent();
+                            return [4 /*yield*/, service.setValue("global_config", config)];
+                        case 2:
+                            _a.sent();
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        BusinessProcess.prototype.run = function () {
+            return __awaiter(this, void 0, void 0, function () {
+                var self, config, projectId, projectName, gitclient, tfclient, gitRepos, validate_1, repoId_1, dlg, gitSelect, repType, repTypeCtrl_1, gitSelectCtrl_1, dialog_1, ele;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            self = this;
+                            return [4 /*yield*/, this.getConfig()];
                         case 1:
                             config = _a.sent();
                             projectId = VSS.getWebContext().project.id;
@@ -104,7 +122,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                     width: "400px",
                                     change: function () {
                                         dialog_1.setDialogResult({
-                                            repositoryId: repoId_1,
+                                            repositoryId: repoId_1(),
                                             repositoryType: repTypeCtrl_1.getValue()
                                         });
                                         dialog_1.updateOkButton(validate_1());
@@ -121,7 +139,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                     change: function () {
                                         gitSelectCtrl_1.setEnabled(this.getText() === "git");
                                         dialog_1.setDialogResult({
-                                            repositoryId: repoId_1,
+                                            repositoryId: repoId_1(),
                                             repositoryType: repTypeCtrl_1.getValue()
                                         });
                                         dialog_1.updateOkButton(validate_1());
@@ -138,6 +156,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                         return __awaiter(this, void 0, void 0, function () {
                                             return __generator(this, function (_a) {
                                                 config = __assign({}, config, result);
+                                                self.setConfig(config);
                                                 return [2 /*return*/];
                                             });
                                         });
