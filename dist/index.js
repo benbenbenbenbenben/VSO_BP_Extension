@@ -196,7 +196,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
             var _this = this;
             return items.map(function (item) {
                 // const node = { name: item.name || item }
-                var node = new TreeView.TreeNode(item.name || name);
+                var node = new TreeView.TreeNode(item.name || item);
                 node.type = item.name ? "folder" : "file";
                 // node.expanded = item.expanded;
                 if (item.children && item.children.length > 0) {

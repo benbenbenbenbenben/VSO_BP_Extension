@@ -98,7 +98,7 @@ export class BusinessProcess {
     private convertToTreeNodes(items) {
         return items.map((item) => {
             // const node = { name: item.name || item }
-            const node = new TreeView.TreeNode(item.name || name)
+            const node = new TreeView.TreeNode(item.name || item)
             node.type = item.name ? "folder" : "file"
             // node.expanded = item.expanded;
             if (item.children && item.children.length > 0) {
