@@ -229,13 +229,13 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                             if (!valid) return [3 /*break*/, 2];
                                             if (!(repTypeCtrl.getText() === "git")) return [3 /*break*/, 2];
                                             treeCtrl.rootNode.clear();
-                                            treeCtrl.updateNode(treeCtrl.rootNode);
                                             _b = (_a = treeCtrl.rootNode).addRange;
                                             return [4 /*yield*/, this.getTree({
                                                     repositoryId: repoId(), repositoryPath: null, type: "git"
                                                 })];
                                         case 1:
                                             _b.apply(_a, [_c.sent()]);
+                                            treeCtrl.updateNode(treeCtrl.rootNode);
                                             _c.label = 2;
                                         case 2:
                                             dialog.updateOkButton(valid);
