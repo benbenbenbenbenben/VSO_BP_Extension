@@ -98,7 +98,7 @@ export class BusinessProcess {
     private convertToTreeNodes(items) {
         return items.map((item) => {
             // const node = { name: item.name || item }
-            const node = new TreeView.TreeNode(item.name);
+            const node = new TreeView.TreeNode(item.name || name)
             node.type = item.name ? "folder" : "file"
             // node.expanded = item.expanded;
             if (item.children && item.children.length > 0) {
@@ -129,12 +129,10 @@ export class BusinessProcess {
                 })
                 if (valid) {
                     if (repTypeCtrl.getText() === "git") {
-                        const treeviewOptions = {
-                            height: "100%",
-                            nodes: await this.getTree({type: "git", repositoryId: repoId(), repositoryPath: null }),
-                            width: 400,
-                        }
-                        Controls.create(TreeView.TreeView, dlg, treeviewOptions);
+                        treeCtrl.rootNode.clear()
+                        treeCtrl.rootNode.addRange(await this.getTree({
+                            repositoryId: repoId(), repositoryPath: null, type: "git"
+                        }))
                     }
                 }
                 dialog.updateOkButton(valid)
@@ -181,6 +179,7 @@ export class BusinessProcess {
                     resolve(config)
                 }
             } as Dialogs.IModalDialogOptions);
+            const treeCtrl = Controls.create(TreeView.TreeView, dlg, {})
             const ele = dialog.getElement();
             ele.on("input", "input", e => {
                 validate()

@@ -196,7 +196,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
             var _this = this;
             return items.map(function (item) {
                 // const node = { name: item.name || item }
-                var node = new TreeView.TreeNode(item.name);
+                var node = new TreeView.TreeNode(item.name || name);
                 node.type = item.name ? "folder" : "file";
                 // node.expanded = item.expanded;
                 if (item.children && item.children.length > 0) {
@@ -216,9 +216,9 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                             var isValid = function () { return (repTypeCtrl.getValue() === "TFS"
                                 || (repTypeCtrl.getValue() === "git" && gitRepos.some(function (x) { return x.name === gitSelectCtrl.getValue(); }))); };
                             var validate = function () { return __awaiter(_this, void 0, void 0, function () {
-                                var valid, treeviewOptions, _a;
-                                return __generator(this, function (_b) {
-                                    switch (_b.label) {
+                                var valid, _a, _b;
+                                return __generator(this, function (_c) {
+                                    switch (_c.label) {
                                         case 0:
                                             valid = isValid();
                                             gitSelectCtrl.setEnabled(repTypeCtrl.getText() === "git");
@@ -228,16 +228,14 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                             });
                                             if (!valid) return [3 /*break*/, 2];
                                             if (!(repTypeCtrl.getText() === "git")) return [3 /*break*/, 2];
-                                            _a = {
-                                                height: "100%"
-                                            };
-                                            return [4 /*yield*/, this.getTree({ type: "git", repositoryId: repoId(), repositoryPath: null })];
+                                            treeCtrl.rootNode.clear();
+                                            _b = (_a = treeCtrl.rootNode).addRange;
+                                            return [4 /*yield*/, this.getTree({
+                                                    repositoryId: repoId(), repositoryPath: null, type: "git"
+                                                })];
                                         case 1:
-                                            treeviewOptions = (_a.nodes = _b.sent(),
-                                                _a.width = 400,
-                                                _a);
-                                            Controls.create(TreeView.TreeView, dlg, treeviewOptions);
-                                            _b.label = 2;
+                                            _b.apply(_a, [_c.sent()]);
+                                            _c.label = 2;
                                         case 2:
                                             dialog.updateOkButton(valid);
                                             return [2 /*return*/];
@@ -291,6 +289,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                     });
                                 }
                             });
+                            var treeCtrl = Controls.create(TreeView.TreeView, dlg, {});
                             var ele = dialog.getElement();
                             ele.on("input", "input", function (e) {
                                 validate();
