@@ -41,12 +41,26 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionControl/TfvcRestClient", "VSS/Controls", "VSS/Controls/Combos", "VSS/Controls/Dialogs"], function (require, exports, GitHttpClient, TfvcRestClient, Controls, Combos, Dialogs) {
+define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionControl/TfvcRestClient", "VSS/Controls", "VSS/Controls/Combos", "VSS/Controls/Dialogs", "VSS/Controls/TreeView"], function (require, exports, GitHttpClient, TfvcRestClient, Controls, Combos, Dialogs, TreeView) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var BusinessProcess = /** @class */ (function () {
         function BusinessProcess() {
         }
+        Object.defineProperty(BusinessProcess.prototype, "gitclient", {
+            get: function () {
+                return GitHttpClient.getClient();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BusinessProcess.prototype, "tfsclient", {
+            get: function () {
+                return TfvcRestClient.getClient();
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(BusinessProcess.prototype, "projectId", {
             get: function () {
                 return VSS.getWebContext().project.id;
@@ -102,9 +116,15 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                 });
             });
         };
+        BusinessProcess.prototype.isConfigComplete = function (config) {
+            return config.baseUrl != null
+                && config.repositoryId != null
+                && config.repositoryPath != null
+                && config.repositoryType != null;
+        };
         BusinessProcess.prototype.run = function () {
             return __awaiter(this, void 0, void 0, function () {
-                var self, config, gitclient, tfclient, gitRepos, files;
+                var self, config, gitRepos;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -112,12 +132,10 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                             return [4 /*yield*/, this.getConfig()];
                         case 1:
                             config = _a.sent();
-                            gitclient = GitHttpClient.getClient();
-                            tfclient = TfvcRestClient.getClient();
-                            return [4 /*yield*/, gitclient.getRepositories(this.projectId)];
+                            return [4 /*yield*/, this.gitclient.getRepositories(this.projectId)];
                         case 2:
                             gitRepos = _a.sent();
-                            if (!(config.repositoryType == null)) return [3 /*break*/, 4];
+                            if (!(this.isConfigComplete(config) === false)) return [3 /*break*/, 4];
                             return [4 /*yield*/, this.promptForConfig(gitRepos, config)];
                         case 3:
                             config = _a.sent();
@@ -125,18 +143,67 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                         case 4:
                             // tslint:disable-next-line:no-console
                             console.log("loaded BPM config: ", config);
-                            if (!(config.repositoryType === "git")) return [3 /*break*/, 6];
-                            return [4 /*yield*/, gitclient.getFilePaths(this.projectId, config.repositoryId, config.repositoryPath)
+                            if (config.repositoryType === "git") {
+                                // const files = await gitclient.getFilePaths(this.projectId, config.repositoryId, config.repositoryPath)
                                 // tslint:disable-next-line:no-console
-                            ];
-                        case 5:
-                            files = _a.sent();
-                            // tslint:disable-next-line:no-console
-                            console.log(files);
-                            _a.label = 6;
-                        case 6: return [2 /*return*/];
+                                console.log(this.getTree(config));
+                            }
+                            return [2 /*return*/];
                     }
                 });
+            });
+        };
+        BusinessProcess.prototype.getTree = function (config) {
+            return __awaiter(this, void 0, void 0, function () {
+                var files, tree;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            if (!(config.type === "git")) return [3 /*break*/, 2];
+                            return [4 /*yield*/, this.gitclient.getFilePaths(this.projectId, config.repositoryId, config.repositoryPath)];
+                        case 1:
+                            files = _a.sent();
+                            tree = files.paths
+                                // tslint:disable-next-line:max-line-length
+                                .map(function (path) { return ({ name: path.split("/").reverse()[0], path: path.split("/").reverse().slice(1).reverse() }); })
+                                .reduce(function (obj, el) {
+                                var orig = obj;
+                                var _loop_1 = function (key) {
+                                    var found = obj.find(function (e) { return e.name === key; });
+                                    if (found) {
+                                        obj = found.children;
+                                    }
+                                    else {
+                                        var temp = { name: key, children: [] };
+                                        obj.push(temp);
+                                        obj = temp.children;
+                                    }
+                                };
+                                for (var _i = 0, _a = el.path; _i < _a.length; _i++) {
+                                    var key = _a[_i];
+                                    _loop_1(key);
+                                }
+                                obj.push(el.name);
+                                return orig;
+                            }, []);
+                            return [2 /*return*/, this.convertToTreeNodes(tree)];
+                        case 2: return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        BusinessProcess.prototype.convertToTreeNodes = function (items) {
+            var _this = this;
+            return items.map(function (item) {
+                // const node = { name: item.name || item }
+                var node = new TreeView.TreeNode(item.name);
+                node.type = item.name ? "folder" : "file";
+                // node.expanded = item.expanded;
+                if (item.children && item.children.length > 0) {
+                    node.addRange(_this.convertToTreeNodes(item.children));
+                    // node.children = convertToTreeNodes(item.children)
+                }
+                return node;
             });
         };
         BusinessProcess.prototype.promptForConfig = function (gitRepos, config) {
@@ -146,8 +213,37 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                 return __generator(this, function (_a) {
                     self = this;
                     return [2 /*return*/, new Promise(function (resolve, reject) {
-                            var validate = function () { return (repTypeCtrl.getValue() === "TFS"
+                            var isValid = function () { return (repTypeCtrl.getValue() === "TFS"
                                 || (repTypeCtrl.getValue() === "git" && gitRepos.some(function (x) { return x.name === gitSelectCtrl.getValue(); }))); };
+                            var validate = function () { return __awaiter(_this, void 0, void 0, function () {
+                                var valid, treeviewOptions, _a;
+                                return __generator(this, function (_b) {
+                                    switch (_b.label) {
+                                        case 0:
+                                            valid = isValid();
+                                            gitSelectCtrl.setEnabled(repTypeCtrl.getText() === "git");
+                                            dialog.setDialogResult({
+                                                repositoryId: repoId(),
+                                                repositoryType: repTypeCtrl.getValue()
+                                            });
+                                            if (!valid) return [3 /*break*/, 2];
+                                            if (!(repTypeCtrl.getText() === "git")) return [3 /*break*/, 2];
+                                            _a = {
+                                                height: "100%"
+                                            };
+                                            return [4 /*yield*/, this.getTree({ type: "git" })];
+                                        case 1:
+                                            treeviewOptions = (_a.nodes = _b.sent(),
+                                                _a.width = 400,
+                                                _a);
+                                            Controls.create(TreeView.TreeView, dlg, treeviewOptions);
+                                            _b.label = 2;
+                                        case 2:
+                                            dialog.updateOkButton(valid);
+                                            return [2 /*return*/];
+                                    }
+                                });
+                            }); };
                             var repoId = function () {
                                 var r = gitRepos.find(function (x) { return x.name === gitSelectCtrl.getValue(); });
                                 return r == null ? null : r.id;
@@ -161,11 +257,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                 source: gitRepos.map(function (r) { return r.name; }),
                                 width: "400px",
                                 change: function () {
-                                    dialog.setDialogResult({
-                                        repositoryId: repoId(),
-                                        repositoryType: repTypeCtrl.getValue()
-                                    });
-                                    dialog.updateOkButton(validate());
+                                    validate();
                                 }
                             };
                             var repType = {
@@ -177,12 +269,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                 value: gitRepos.length > 0 ? "git" : "TFS",
                                 width: "400px",
                                 change: function () {
-                                    gitSelectCtrl.setEnabled(this.getText() === "git");
-                                    dialog.setDialogResult({
-                                        repositoryId: repoId(),
-                                        repositoryType: repTypeCtrl.getValue()
-                                    });
-                                    dialog.updateOkButton(validate());
+                                    validate();
                                 }
                             };
                             $("<label />").text("Repository Type:").appendTo(dlg);
@@ -206,7 +293,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                             });
                             var ele = dialog.getElement();
                             ele.on("input", "input", function (e) {
-                                dialog.updateOkButton(validate());
+                                validate();
                             });
                         })];
                 });

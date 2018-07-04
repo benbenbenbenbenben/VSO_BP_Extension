@@ -8,11 +8,18 @@ import Controls = require("VSS/Controls")
 import Combos = require("VSS/Controls/Combos")
 import Dialogs = require("VSS/Controls/Dialogs")
 import StatusIndicator = require("VSS/Controls/StatusIndicator")
+import TreeView = require("VSS/Controls/TreeView")
 import { ExtensionDataService } from "VSS/SDK/Services/ExtensionData"
 import Utils_String = require("VSS/Utils/String")
 
 export class BusinessProcess {
 
+    public get gitclient() {
+        return GitHttpClient.getClient()
+    }
+    public get tfsclient() {
+        return TfvcRestClient.getClient()
+    }
     public get projectId(): string {
         return VSS.getWebContext().project.id
     }
@@ -38,24 +45,68 @@ export class BusinessProcess {
         await service.setValue("global_" + this.projectId, config)
     }
 
+    public isConfigComplete(config) {
+        return config.baseUrl != null
+            && config.repositoryId != null
+            && config.repositoryPath != null
+            && config.repositoryType != null
+    }
+
     public async run() {
         const self = this
         let config = await this.getConfig()
-        const gitclient = GitHttpClient.getClient()
-        const tfclient = TfvcRestClient.getClient()
-        const gitRepos = await gitclient.getRepositories(this.projectId)
+        const gitRepos = await this.gitclient.getRepositories(this.projectId)
 
-        if (config.repositoryType == null) {
+        if (this.isConfigComplete(config) === false) {
             config = await this.promptForConfig(gitRepos, config);
         }
         // tslint:disable-next-line:no-console
         console.log("loaded BPM config: ", config)
 
         if (config.repositoryType === "git") {
-            const files = await gitclient.getFilePaths(this.projectId, config.repositoryId, config.repositoryPath)
+            // const files = await gitclient.getFilePaths(this.projectId, config.repositoryId, config.repositoryPath)
             // tslint:disable-next-line:no-console
-            console.log(files)
+            console.log(this.getTree(config))
         }
+    }
+
+    public async getTree(config) {
+        if (config.type === "git") {
+            const files = await this.gitclient.getFilePaths(this.projectId, config.repositoryId, config.repositoryPath)
+            const tree = files.paths
+                // tslint:disable-next-line:max-line-length
+                .map(path => ({ name: path.split("/").reverse()[0], path: path.split("/").reverse().slice(1).reverse() }))
+                .reduce((obj, el) => {
+                    const orig = obj;
+                    for (const key of el.path) {
+                        const found = obj.find(e => e.name === key)
+                        if (found) {
+                            obj = found.children
+                        } else {
+                            const temp = {name: key, children: []}
+                            obj.push(temp)
+                            obj = temp.children
+                        }
+                    }
+                    obj.push(el.name)
+                    return orig;
+            }, [])
+            return this.convertToTreeNodes(tree)
+        }
+    }
+
+    private convertToTreeNodes(items) {
+        return items.map((item) => {
+            // const node = { name: item.name || item }
+            const node = new TreeView.TreeNode(item.name);
+            node.type = item.name ? "folder" : "file"
+            // node.expanded = item.expanded;
+            if (item.children && item.children.length > 0) {
+              node.addRange(this.convertToTreeNodes(item.children));
+              // node.children = convertToTreeNodes(item.children)
+            }
+            return node;
+          });
     }
 
     private async promptForConfig(gitRepos: VCContracts.GitRepository[], config: {
@@ -67,8 +118,27 @@ export class BusinessProcess {
             repositoryId: string,
             repositoryPath: string,
             repositoryType: string}>((resolve, reject) => {
-            const validate = () => (repTypeCtrl.getValue() === "TFS"
+            const isValid = () => (repTypeCtrl.getValue() === "TFS"
                 || (repTypeCtrl.getValue() === "git" && gitRepos.some(x => x.name === gitSelectCtrl.getValue())));
+            const validate = async () => {
+                const valid = isValid()
+                gitSelectCtrl.setEnabled(repTypeCtrl.getText() === "git")
+                dialog.setDialogResult({
+                    repositoryId: repoId(),
+                    repositoryType: repTypeCtrl.getValue()
+                })
+                if (valid) {
+                    if (repTypeCtrl.getText() === "git") {
+                        const treeviewOptions = {
+                            height: "100%",
+                            nodes: await this.getTree({type: "git"}),
+                            width: 400,
+                        }
+                        Controls.create(TreeView.TreeView, dlg, treeviewOptions);
+                    }
+                }
+                dialog.updateOkButton(valid)
+            }
             const repoId = () => {
                 const r = gitRepos.find(x => x.name === gitSelectCtrl.getValue());
                 return r == null ? null : r.id;
@@ -82,11 +152,7 @@ export class BusinessProcess {
                 source: gitRepos.map(r => r.name),
                 width: "400px",
                 change() {
-                    dialog.setDialogResult({
-                        repositoryId: repoId(),
-                        repositoryType: repTypeCtrl.getValue()
-                    });
-                    dialog.updateOkButton(validate());
+                    validate()
                 }
             } as Combos.IComboOptions;
             const repType = {
@@ -98,12 +164,7 @@ export class BusinessProcess {
                 value: gitRepos.length > 0 ? "git" : "TFS",
                 width: "400px",
                 change() {
-                    gitSelectCtrl.setEnabled(this.getText() === "git");
-                    dialog.setDialogResult({
-                        repositoryId: repoId(),
-                        repositoryType: repTypeCtrl.getValue()
-                    });
-                    dialog.updateOkButton(validate());
+                    validate()
                 }
             } as Combos.IComboOptions;
             $("<label />").text("Repository Type:").appendTo(dlg);
@@ -122,7 +183,7 @@ export class BusinessProcess {
             } as Dialogs.IModalDialogOptions);
             const ele = dialog.getElement();
             ele.on("input", "input", e => {
-                dialog.updateOkButton(validate());
+                validate()
             });
         })
     }
