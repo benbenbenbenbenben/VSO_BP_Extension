@@ -129,7 +129,8 @@ export class BusinessProcess {
                 })
                 if (valid) {
                     if (repTypeCtrl.getText() === "git") {
-                        treeCtrl.rootNode.clear()
+                        treeCtrl.rootNode.children = []
+                        treeCtrl.updateNode(treeCtrl.rootNode)
                         treeCtrl.rootNode.addRange(await this.getTree({
                             repositoryId: repoId(), repositoryPath: null, type: "git"
                         }))
