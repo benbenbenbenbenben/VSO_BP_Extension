@@ -228,7 +228,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                             });
                                             if (!valid) return [3 /*break*/, 2];
                                             if (!(repTypeCtrl.getText() === "git")) return [3 /*break*/, 2];
-                                            treeCtrl.rootNode.children = [];
+                                            treeCtrl.rootNode.clear();
                                             treeCtrl.updateNode(treeCtrl.rootNode);
                                             _b = (_a = treeCtrl.rootNode).addRange;
                                             return [4 /*yield*/, this.getTree({
