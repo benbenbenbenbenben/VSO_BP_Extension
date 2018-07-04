@@ -131,7 +131,7 @@ export class BusinessProcess {
                     if (repTypeCtrl.getText() === "git") {
                         const treeviewOptions = {
                             height: "100%",
-                            nodes: await this.getTree({type: "git", repositoryId: repoId, repositoryPath: null }),
+                            nodes: await this.getTree({type: "git", repositoryId: repoId(), repositoryPath: null }),
                             width: 400,
                         }
                         Controls.create(TreeView.TreeView, dlg, treeviewOptions);

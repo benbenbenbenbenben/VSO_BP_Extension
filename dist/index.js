@@ -231,7 +231,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                             _a = {
                                                 height: "100%"
                                             };
-                                            return [4 /*yield*/, this.getTree({ type: "git", repositoryId: repoId, repositoryPath: null })];
+                                            return [4 /*yield*/, this.getTree({ type: "git", repositoryId: repoId(), repositoryPath: null })];
                                         case 1:
                                             treeviewOptions = (_a.nodes = _b.sent(),
                                                 _a.width = 400,
