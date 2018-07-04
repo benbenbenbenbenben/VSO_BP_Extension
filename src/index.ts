@@ -180,7 +180,8 @@ export class BusinessProcess {
                     resolve(config)
                 }
             } as Dialogs.IModalDialogOptions);
-            const treeCtrl = Controls.create(TreeView.TreeView, dlg, {})
+            $("<label />").text("Root Directory:").appendTo(dlg);
+            const treeCtrl = Controls.create(TreeView.TreeView, dlg, { width: "400px" })
             const ele = dialog.getElement();
             ele.on("input", "input", e => {
                 validate()

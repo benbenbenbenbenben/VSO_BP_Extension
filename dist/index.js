@@ -290,7 +290,8 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                     });
                                 }
                             });
-                            var treeCtrl = Controls.create(TreeView.TreeView, dlg, {});
+                            $("<label />").text("Root Directory:").appendTo(dlg);
+                            var treeCtrl = Controls.create(TreeView.TreeView, dlg, { width: "400px" });
                             var ele = dialog.getElement();
                             ele.on("input", "input", function (e) {
                                 validate();
