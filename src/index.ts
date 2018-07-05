@@ -126,23 +126,34 @@ export class BusinessProcess {
                 }
                 return null
             }
-            const isValid = () => (repTypeCtrl.getValue() === "TFS"
-                || (repTypeCtrl.getValue() === "git" && gitRepos.some(x => x.name === gitSelectCtrl.getValue())));
+            const isValid = () => (
+                repTypeCtrl.getValue() === "TFS" || (repTypeCtrl.getValue() === "git"
+                 && gitRepos.some(x => x.name === gitSelectCtrl.getValue()))
+                 && treeCtrl.getSelectedNode() != null
+            )
             const validate = async () => {
                 const valid = isValid()
-                gitSelectCtrl.setEnabled(repTypeCtrl.getText() === "git")
+                const oldRepositoryType = dialog.getDialogResult().repositoryType
+                const newRepositoryType = repTypeCtrl.getText()
+                const oldRepositoryPath = dialog.getDialogResult().repositoryPath
+                const newRepositoryPath = treeSelectedFolder()
+                gitSelectCtrl.setEnabled(newRepositoryType === "git")
                 dialog.setDialogResult({
                     repositoryId: repoId(),
-                    repositoryPath: treeSelectedFolder(),
-                    repositoryType: repTypeCtrl.getValue()
+                    repositoryPath: newRepositoryPath,
+                    repositoryType: newRepositoryType
                 })
-                if (valid) {
-                    if (repTypeCtrl.getText() === "git") {
+                // change tree if we've changed repo type
+                if (valid && ((newRepositoryType !== oldRepositoryType)
+                || (newRepositoryType === "git" && newRepositoryPath !== oldRepositoryPath))) {
+                    if (newRepositoryType === "git") {
                         treeCtrl.rootNode.clear()
                         treeCtrl.rootNode.addRange(await this.getTree({
                             repositoryId: repoId(), repositoryPath: null, type: "git"
                         }))
                         treeCtrl.updateNode(treeCtrl.rootNode)
+                    } else {
+                        // TODO: update tree for TFS
                     }
                 }
                 dialog.updateOkButton(valid)
@@ -195,6 +206,7 @@ export class BusinessProcess {
             ele.on("input", "input", e => {
                 validate()
             });
+            dlg.bind("selectionchanged", () => validate())
         })
     }
 }

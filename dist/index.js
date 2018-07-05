@@ -221,22 +221,28 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                 }
                                 return null;
                             };
-                            var isValid = function () { return (repTypeCtrl.getValue() === "TFS"
-                                || (repTypeCtrl.getValue() === "git" && gitRepos.some(function (x) { return x.name === gitSelectCtrl.getValue(); }))); };
+                            var isValid = function () { return (repTypeCtrl.getValue() === "TFS" || (repTypeCtrl.getValue() === "git"
+                                && gitRepos.some(function (x) { return x.name === gitSelectCtrl.getValue(); }))
+                                && treeCtrl.getSelectedNode() != null); };
                             var validate = function () { return __awaiter(_this, void 0, void 0, function () {
-                                var valid, _a, _b;
+                                var valid, oldRepositoryType, newRepositoryType, oldRepositoryPath, newRepositoryPath, _a, _b;
                                 return __generator(this, function (_c) {
                                     switch (_c.label) {
                                         case 0:
                                             valid = isValid();
-                                            gitSelectCtrl.setEnabled(repTypeCtrl.getText() === "git");
+                                            oldRepositoryType = dialog.getDialogResult().repositoryType;
+                                            newRepositoryType = repTypeCtrl.getText();
+                                            oldRepositoryPath = dialog.getDialogResult().repositoryPath;
+                                            newRepositoryPath = treeSelectedFolder();
+                                            gitSelectCtrl.setEnabled(newRepositoryType === "git");
                                             dialog.setDialogResult({
                                                 repositoryId: repoId(),
-                                                repositoryPath: treeSelectedFolder(),
-                                                repositoryType: repTypeCtrl.getValue()
+                                                repositoryPath: newRepositoryPath,
+                                                repositoryType: newRepositoryType
                                             });
-                                            if (!valid) return [3 /*break*/, 2];
-                                            if (!(repTypeCtrl.getText() === "git")) return [3 /*break*/, 2];
+                                            if (!(valid && ((newRepositoryType !== oldRepositoryType)
+                                                || (newRepositoryType === "git" && newRepositoryPath !== oldRepositoryPath)))) return [3 /*break*/, 2];
+                                            if (!(newRepositoryType === "git")) return [3 /*break*/, 2];
                                             treeCtrl.rootNode.clear();
                                             _b = (_a = treeCtrl.rootNode).addRange;
                                             return [4 /*yield*/, this.getTree({
@@ -245,7 +251,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                         case 1:
                                             _b.apply(_a, [_c.sent()]);
                                             treeCtrl.updateNode(treeCtrl.rootNode);
-                                            _c.label = 2;
+                                            return [3 /*break*/, 2];
                                         case 2:
                                             dialog.updateOkButton(valid);
                                             return [2 /*return*/];
@@ -305,6 +311,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                             ele.on("input", "input", function (e) {
                                 validate();
                             });
+                            dlg.bind("selectionchanged", function () { return validate(); });
                         })];
                 });
             });
