@@ -236,9 +236,9 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                     switch (_a.label) {
                                         case 0:
                                             valid = isValid();
-                                            oldRepositoryType = dialog.getDialogResult().repositoryType;
+                                            oldRepositoryType = dialog.getDialogResult() ? dialog.getDialogResult().repositoryType : null;
                                             newRepositoryType = repTypeCtrl.getText();
-                                            oldRepositoryPath = dialog.getDialogResult().repositoryPath;
+                                            oldRepositoryPath = dialog.getDialogResult() ? dialog.getDialogResult().repositoryPath : null;
                                             newRepositoryPath = treeSelectedFolder();
                                             gitSelectCtrl.setEnabled(newRepositoryType === "git");
                                             dialog.setDialogResult({

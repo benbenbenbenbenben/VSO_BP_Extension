@@ -138,9 +138,9 @@ export class BusinessProcess {
             )
             const validate = async () => {
                 const valid = isValid()
-                const oldRepositoryType = dialog.getDialogResult().repositoryType
+                const oldRepositoryType = dialog.getDialogResult() ? dialog.getDialogResult().repositoryType : null
                 const newRepositoryType = repTypeCtrl.getText()
-                const oldRepositoryPath = dialog.getDialogResult().repositoryPath
+                const oldRepositoryPath = dialog.getDialogResult() ? dialog.getDialogResult().repositoryPath : null
                 const newRepositoryPath = treeSelectedFolder()
                 gitSelectCtrl.setEnabled(newRepositoryType === "git")
                 dialog.setDialogResult({
