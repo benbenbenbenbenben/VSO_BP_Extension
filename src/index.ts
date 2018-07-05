@@ -73,7 +73,7 @@ export class BusinessProcess {
     public async getTree(config) {
         if (config.type === "git") {
             const files = await this.gitclient.getFilePaths(this.projectId, config.repositoryId, config.repositoryPath)
-            const tree = files.paths
+            let tree = files.paths
                 // tslint:disable-next-line:max-line-length
                 .map(path => ({ name: path.split("/").reverse()[0], path: path.split("/").reverse().slice(1).reverse() }))
                 .reduce((obj, el) => {
@@ -91,6 +91,7 @@ export class BusinessProcess {
                     obj.push(el.name)
                     return orig;
             }, [])
+            tree = [{ name: "/", children: tree }]
             return this.convertToTreeNodes(tree)
         }
     }
@@ -118,6 +119,13 @@ export class BusinessProcess {
             repositoryId: string,
             repositoryPath: string,
             repositoryType: string}>((resolve, reject) => {
+            const treeSelectedFolder = () => {
+                const sel = treeCtrl.getSelectedNode()
+                if (sel) {
+                    return sel.type === "folder" ? sel.path(null, null) : sel.parent.path(null, null)
+                }
+                return null
+            }
             const isValid = () => (repTypeCtrl.getValue() === "TFS"
                 || (repTypeCtrl.getValue() === "git" && gitRepos.some(x => x.name === gitSelectCtrl.getValue())));
             const validate = async () => {
@@ -125,6 +133,7 @@ export class BusinessProcess {
                 gitSelectCtrl.setEnabled(repTypeCtrl.getText() === "git")
                 dialog.setDialogResult({
                     repositoryId: repoId(),
+                    repositoryPath: treeSelectedFolder(),
                     repositoryType: repTypeCtrl.getValue()
                 })
                 if (valid) {

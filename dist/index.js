@@ -186,6 +186,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                 obj.push(el.name);
                                 return orig;
                             }, []);
+                            tree = [{ name: "/", children: tree }];
                             return [2 /*return*/, this.convertToTreeNodes(tree)];
                         case 2: return [2 /*return*/];
                     }
@@ -213,6 +214,13 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                 return __generator(this, function (_a) {
                     self = this;
                     return [2 /*return*/, new Promise(function (resolve, reject) {
+                            var treeSelectedFolder = function () {
+                                var sel = treeCtrl.getSelectedNode();
+                                if (sel) {
+                                    return sel.type === "folder" ? sel.path(null, null) : sel.parent.path(null, null);
+                                }
+                                return null;
+                            };
                             var isValid = function () { return (repTypeCtrl.getValue() === "TFS"
                                 || (repTypeCtrl.getValue() === "git" && gitRepos.some(function (x) { return x.name === gitSelectCtrl.getValue(); }))); };
                             var validate = function () { return __awaiter(_this, void 0, void 0, function () {
@@ -224,6 +232,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                             gitSelectCtrl.setEnabled(repTypeCtrl.getText() === "git");
                                             dialog.setDialogResult({
                                                 repositoryId: repoId(),
+                                                repositoryPath: treeSelectedFolder(),
                                                 repositoryType: repTypeCtrl.getValue()
                                             });
                                             if (!valid) return [3 /*break*/, 2];
