@@ -72,27 +72,32 @@ export class BusinessProcess {
 
     public async getTree(config) {
         if (config.type === "git") {
-            const files = await this.gitclient.getFilePaths(this.projectId, config.repositoryId, config.repositoryPath)
-            let tree = files.paths
-                // tslint:disable-next-line:max-line-length
-                .map(path => ({ name: path.split("/").reverse()[0], path: path.split("/").reverse().slice(1).reverse() }))
-                .reduce((obj, el) => {
-                    const orig = obj;
-                    for (const key of el.path) {
-                        const found = obj.find(e => e.name === key)
-                        if (found) {
-                            obj = found.children
-                        } else {
-                            const temp = {name: key, children: []}
-                            obj.push(temp)
-                            obj = temp.children
+            try {
+                const files = await this.gitclient.getFilePaths(this.projectId,
+                    config.repositoryId, config.repositoryPath)
+                let tree = files.paths
+                    // tslint:disable-next-line:max-line-length
+                    .map(path => ({ name: path.split("/").reverse()[0], path: path.split("/").reverse().slice(1).reverse() }))
+                    .reduce((obj, el) => {
+                        const orig = obj;
+                        for (const key of el.path) {
+                            const found = obj.find(e => e.name === key)
+                            if (found) {
+                                obj = found.children
+                            } else {
+                                const temp = {name: key, children: []}
+                                obj.push(temp)
+                                obj = temp.children
+                            }
                         }
-                    }
-                    obj.push(el.name)
-                    return orig;
-            }, [])
-            tree = [{ name: "root", children: tree }]
-            return this.convertToTreeNodes(tree)
+                        obj.push(el.name)
+                        return orig;
+                }, [])
+                tree = [{ name: "root", children: tree }]
+                return this.convertToTreeNodes(tree)
+            } catch (e) {
+                return null;
+            }
         }
     }
 
@@ -148,9 +153,13 @@ export class BusinessProcess {
                 || (newRepositoryType === "git" && newRepositoryPath !== oldRepositoryPath))) {
                     if (newRepositoryType === "git") {
                         treeCtrl.rootNode.clear()
-                        treeCtrl.rootNode.addRange(await this.getTree({
+                        let nodes = await this.getTree({
                             repositoryId: repoId(), repositoryPath: null, type: "git"
-                        }))
+                        })
+                        if (nodes == null) {
+                            nodes = [{name: "<no repository>", type: "null"}]
+                        }
+                        treeCtrl.rootNode.addRange(nodes)
                         treeCtrl.updateNode(treeCtrl.rootNode)
                     } else {
                         // TODO: update tree for TFS

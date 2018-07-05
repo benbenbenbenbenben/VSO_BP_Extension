@@ -155,13 +155,16 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
         };
         BusinessProcess.prototype.getTree = function (config) {
             return __awaiter(this, void 0, void 0, function () {
-                var files, tree;
+                var files, tree, e_1;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            if (!(config.type === "git")) return [3 /*break*/, 2];
-                            return [4 /*yield*/, this.gitclient.getFilePaths(this.projectId, config.repositoryId, config.repositoryPath)];
+                            if (!(config.type === "git")) return [3 /*break*/, 4];
+                            _a.label = 1;
                         case 1:
+                            _a.trys.push([1, 3, , 4]);
+                            return [4 /*yield*/, this.gitclient.getFilePaths(this.projectId, config.repositoryId, config.repositoryPath)];
+                        case 2:
                             files = _a.sent();
                             tree = files.paths
                                 // tslint:disable-next-line:max-line-length
@@ -188,7 +191,10 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                             }, []);
                             tree = [{ name: "root", children: tree }];
                             return [2 /*return*/, this.convertToTreeNodes(tree)];
-                        case 2: return [2 /*return*/];
+                        case 3:
+                            e_1 = _a.sent();
+                            return [2 /*return*/, null];
+                        case 4: return [2 /*return*/];
                     }
                 });
             });
@@ -225,9 +231,9 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                 && gitRepos.some(function (x) { return x.name === gitSelectCtrl.getValue(); }))
                                 && treeCtrl.getSelectedNode() != null); };
                             var validate = function () { return __awaiter(_this, void 0, void 0, function () {
-                                var valid, oldRepositoryType, newRepositoryType, oldRepositoryPath, newRepositoryPath, _a, _b;
-                                return __generator(this, function (_c) {
-                                    switch (_c.label) {
+                                var valid, oldRepositoryType, newRepositoryType, oldRepositoryPath, newRepositoryPath, nodes;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
                                         case 0:
                                             valid = isValid();
                                             oldRepositoryType = dialog.getDialogResult().repositoryType;
@@ -244,12 +250,15 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                                 || (newRepositoryType === "git" && newRepositoryPath !== oldRepositoryPath)))) return [3 /*break*/, 2];
                                             if (!(newRepositoryType === "git")) return [3 /*break*/, 2];
                                             treeCtrl.rootNode.clear();
-                                            _b = (_a = treeCtrl.rootNode).addRange;
                                             return [4 /*yield*/, this.getTree({
                                                     repositoryId: repoId(), repositoryPath: null, type: "git"
                                                 })];
                                         case 1:
-                                            _b.apply(_a, [_c.sent()]);
+                                            nodes = _a.sent();
+                                            if (nodes == null) {
+                                                nodes = [{ name: "<no repository>", type: "null" }];
+                                            }
+                                            treeCtrl.rootNode.addRange(nodes);
                                             treeCtrl.updateNode(treeCtrl.rootNode);
                                             return [3 /*break*/, 2];
                                         case 2:
