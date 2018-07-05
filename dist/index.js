@@ -256,7 +256,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                         case 1:
                                             nodes = _a.sent();
                                             if (nodes == null) {
-                                                nodes = [{ name: "<no repository>", type: "null" }];
+                                                nodes = [new TreeView.TreeNode("<no repository>")];
                                             }
                                             treeCtrl.rootNode.addRange(nodes);
                                             treeCtrl.updateNode(treeCtrl.rootNode);

@@ -157,7 +157,7 @@ export class BusinessProcess {
                             repositoryId: repoId(), repositoryPath: null, type: "git"
                         })
                         if (nodes == null) {
-                            nodes = [{name: "<no repository>", type: "null"}]
+                            nodes = [new TreeView.TreeNode("<no repository>")]
                         }
                         treeCtrl.rootNode.addRange(nodes)
                         treeCtrl.updateNode(treeCtrl.rootNode)
