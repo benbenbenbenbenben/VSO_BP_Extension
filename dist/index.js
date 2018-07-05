@@ -229,13 +229,13 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                             };
                             var isValid = function () { return (repTypeCtrl.getValue() === "TFS" || (repTypeCtrl.getValue() === "git"
                                 && gitRepos.some(function (x) { return x.name === gitSelectCtrl.getValue(); }))
-                                && treeCtrl.getSelectedNode() != null); };
+                                && treeCtrl.getSelectedNode() != null
+                                && treeCtrl.getSelectedNode().type != null); };
                             var validate = function () { return __awaiter(_this, void 0, void 0, function () {
-                                var valid, oldRepositoryType, newRepositoryType, oldRepositoryPath, newRepositoryPath, nodes;
+                                var oldRepositoryType, newRepositoryType, oldRepositoryPath, newRepositoryPath, nodes, valid;
                                 return __generator(this, function (_a) {
                                     switch (_a.label) {
                                         case 0:
-                                            valid = isValid();
                                             oldRepositoryType = dialog.getDialogResult() ? dialog.getDialogResult().repositoryType : null;
                                             newRepositoryType = repTypeCtrl.getText();
                                             oldRepositoryPath = dialog.getDialogResult() ? dialog.getDialogResult().repositoryPath : null;
@@ -262,6 +262,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                             treeCtrl.updateNode(treeCtrl.rootNode);
                                             return [3 /*break*/, 2];
                                         case 2:
+                                            valid = isValid();
                                             dialog.updateOkButton(valid);
                                             return [2 /*return*/];
                                     }

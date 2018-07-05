@@ -135,9 +135,9 @@ export class BusinessProcess {
                 repTypeCtrl.getValue() === "TFS" || (repTypeCtrl.getValue() === "git"
                  && gitRepos.some(x => x.name === gitSelectCtrl.getValue()))
                  && treeCtrl.getSelectedNode() != null
+                 && treeCtrl.getSelectedNode().type != null
             )
             const validate = async () => {
-                const valid = isValid()
                 const oldRepositoryType = dialog.getDialogResult() ? dialog.getDialogResult().repositoryType : null
                 const newRepositoryType = repTypeCtrl.getText()
                 const oldRepositoryPath = dialog.getDialogResult() ? dialog.getDialogResult().repositoryPath : null
@@ -165,6 +165,7 @@ export class BusinessProcess {
                         // TODO: update tree for TFS
                     }
                 }
+                const valid = isValid()
                 dialog.updateOkButton(valid)
             }
             const repoId = () => {
