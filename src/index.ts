@@ -149,8 +149,8 @@ export class BusinessProcess {
                     repositoryType: newRepositoryType
                 })
                 // change tree if we've changed repo type
-                if (valid && ((newRepositoryType !== oldRepositoryType)
-                || (newRepositoryType === "git" && newRepositoryPath !== oldRepositoryPath))) {
+                if ((newRepositoryType !== oldRepositoryType)
+                || (newRepositoryType === "git" && newRepositoryPath !== oldRepositoryPath)) {
                     if (newRepositoryType === "git") {
                         treeCtrl.rootNode.clear()
                         let nodes = await this.getTree({

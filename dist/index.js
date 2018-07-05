@@ -246,8 +246,8 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                                 repositoryPath: newRepositoryPath,
                                                 repositoryType: newRepositoryType
                                             });
-                                            if (!(valid && ((newRepositoryType !== oldRepositoryType)
-                                                || (newRepositoryType === "git" && newRepositoryPath !== oldRepositoryPath)))) return [3 /*break*/, 2];
+                                            if (!((newRepositoryType !== oldRepositoryType)
+                                                || (newRepositoryType === "git" && newRepositoryPath !== oldRepositoryPath))) return [3 /*break*/, 2];
                                             if (!(newRepositoryType === "git")) return [3 /*break*/, 2];
                                             treeCtrl.rootNode.clear();
                                             return [4 /*yield*/, this.getTree({
