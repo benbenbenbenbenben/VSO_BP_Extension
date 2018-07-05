@@ -91,7 +91,7 @@ export class BusinessProcess {
                     obj.push(el.name)
                     return orig;
             }, [])
-            tree = [{ name: "/", children: tree }]
+            tree = [{ name: "root", children: tree }]
             return this.convertToTreeNodes(tree)
         }
     }

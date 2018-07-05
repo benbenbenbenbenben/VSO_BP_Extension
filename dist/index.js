@@ -186,7 +186,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                 obj.push(el.name);
                                 return orig;
                             }, []);
-                            tree = [{ name: "/", children: tree }];
+                            tree = [{ name: "root", children: tree }];
                             return [2 /*return*/, this.convertToTreeNodes(tree)];
                         case 2: return [2 /*return*/];
                     }
