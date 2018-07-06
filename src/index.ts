@@ -69,7 +69,7 @@ export class BusinessProcess {
         const rootFilePaths = await this.gitclient.getFilePaths(this.projectId,
             config.repositoryId, config.repositoryPath.substring(5))
         const rootXmlFiles = rootFilePaths.paths.filter(path => path.endsWith(".xml"))
-        const basedocument = await this.gitclient.getItemContent(config.repositoryId,
+        const basedocument = await this.gitclient.getItemText(config.repositoryId,
             rootXmlFiles[0])
         /*
         ?lightbox=1
@@ -90,7 +90,7 @@ export class BusinessProcess {
             ui: "min"
         })
         // tslint:disable-next-line:max-line-length
-        const base64String = "#R" + encodeURIComponent(String.fromCharCode.apply(null, new Uint8Array(basedocument)));
+        const base64String = "#R" + encodeURIComponent(basedocument);
         content.append(`<iframe style='width:100%;height:100%' src='${uri}'></iframe>`)
     }
 

@@ -148,7 +148,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                         case 5:
                             rootFilePaths = _a.sent();
                             rootXmlFiles = rootFilePaths.paths.filter(function (path) { return path.endsWith(".xml"); });
-                            return [4 /*yield*/, this.gitclient.getItemContent(config.repositoryId, rootXmlFiles[0])
+                            return [4 /*yield*/, this.gitclient.getItemText(config.repositoryId, rootXmlFiles[0])
                                 /*
                                 ?lightbox=1
                                 &highlight=0000ff
@@ -170,7 +170,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                 splash: "0",
                                 ui: "min"
                             });
-                            base64String = "#R" + encodeURIComponent(String.fromCharCode.apply(null, new Uint8Array(basedocument)));
+                            base64String = "#R" + encodeURIComponent(basedocument);
                             content.append("<iframe style='width:100%;height:100%' src='" + uri + "'></iframe>");
                             return [2 /*return*/];
                     }
