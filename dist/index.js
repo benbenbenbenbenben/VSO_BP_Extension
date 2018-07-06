@@ -161,7 +161,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                         case 6:
                             basedocument = _a.sent();
                             uri = this.addUrlParameters(config.baseUrl, {
-                                cors: ".",
+                                cors: ".*",
                                 edit: "" + this.addUrlParameters(config.baseUrl, { ui: "min" }),
                                 highlight: "0000ff",
                                 layers: "1",
