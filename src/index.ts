@@ -140,21 +140,24 @@ export class BusinessProcess {
             const validate = async () => {
                 const oldRepositoryType = dialog.getDialogResult() ? dialog.getDialogResult().repositoryType : null
                 const newRepositoryType = repTypeCtrl.getText()
+                const oldGitRepository = dialog.getDialogResult() ? dialog.getDialogResult().repositoryId : null
+                const newGitRepository = repoId()
                 const oldRepositoryPath = dialog.getDialogResult() ? dialog.getDialogResult().repositoryPath : null
                 const newRepositoryPath = treeSelectedFolder()
                 gitSelectCtrl.setEnabled(newRepositoryType === "git")
                 dialog.setDialogResult({
-                    repositoryId: repoId(),
+                    repositoryId: newGitRepository,
                     repositoryPath: newRepositoryPath,
                     repositoryType: newRepositoryType
                 })
                 // change tree if we've changed repo type
                 if ((newRepositoryType !== oldRepositoryType)
-                || (newRepositoryType === "git" && newRepositoryPath !== oldRepositoryPath)) {
+                || (newRepositoryType === "git" && newRepositoryPath !== oldRepositoryPath)
+                || (newGitRepository !== oldGitRepository)) {
                     if (newRepositoryType === "git") {
                         treeCtrl.rootNode.clear()
                         let nodes = await this.getTree({
-                            repositoryId: repoId(), repositoryPath: null, type: "git"
+                            repositoryId: newGitRepository, repositoryPath: null, type: "git"
                         })
                         if (nodes == null) {
                             nodes = [new TreeView.TreeNode("<no repository>")]

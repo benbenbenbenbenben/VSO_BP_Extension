@@ -232,26 +232,29 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                 && treeCtrl.getSelectedNode() != null
                                 && treeCtrl.getSelectedNode().type != null); };
                             var validate = function () { return __awaiter(_this, void 0, void 0, function () {
-                                var oldRepositoryType, newRepositoryType, oldRepositoryPath, newRepositoryPath, nodes, valid;
+                                var oldRepositoryType, newRepositoryType, oldGitRepository, newGitRepository, oldRepositoryPath, newRepositoryPath, nodes, valid;
                                 return __generator(this, function (_a) {
                                     switch (_a.label) {
                                         case 0:
                                             oldRepositoryType = dialog.getDialogResult() ? dialog.getDialogResult().repositoryType : null;
                                             newRepositoryType = repTypeCtrl.getText();
+                                            oldGitRepository = dialog.getDialogResult() ? dialog.getDialogResult().repositoryId : null;
+                                            newGitRepository = repoId();
                                             oldRepositoryPath = dialog.getDialogResult() ? dialog.getDialogResult().repositoryPath : null;
                                             newRepositoryPath = treeSelectedFolder();
                                             gitSelectCtrl.setEnabled(newRepositoryType === "git");
                                             dialog.setDialogResult({
-                                                repositoryId: repoId(),
+                                                repositoryId: newGitRepository,
                                                 repositoryPath: newRepositoryPath,
                                                 repositoryType: newRepositoryType
                                             });
                                             if (!((newRepositoryType !== oldRepositoryType)
-                                                || (newRepositoryType === "git" && newRepositoryPath !== oldRepositoryPath))) return [3 /*break*/, 2];
+                                                || (newRepositoryType === "git" && newRepositoryPath !== oldRepositoryPath)
+                                                || (newGitRepository !== oldGitRepository))) return [3 /*break*/, 2];
                                             if (!(newRepositoryType === "git")) return [3 /*break*/, 2];
                                             treeCtrl.rootNode.clear();
                                             return [4 /*yield*/, this.getTree({
-                                                    repositoryId: repoId(), repositoryPath: null, type: "git"
+                                                    repositoryId: newGitRepository, repositoryPath: null, type: "git"
                                                 })];
                                         case 1:
                                             nodes = _a.sent();
