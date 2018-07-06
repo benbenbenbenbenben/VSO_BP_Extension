@@ -90,7 +90,7 @@ export class BusinessProcess {
             ui: "min"
         })
         // tslint:disable-next-line:max-line-length
-        const base64String = "#R" + encodeURIComponent(btoa(String.fromCharCode.apply(null, new Uint16Array(basedocument))));
+        const base64String = "#R" + encodeURIComponent(btoa(String.fromCharCode.apply(null, new Uint8Array(basedocument))));
         content.append(`<iframe style='width:100%;height:100%' src='${uri}'></iframe>`)
     }
 

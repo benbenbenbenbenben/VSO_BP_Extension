@@ -170,7 +170,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                 splash: "0",
                                 ui: "min"
                             });
-                            base64String = "#R" + encodeURIComponent(btoa(String.fromCharCode.apply(null, new Uint16Array(basedocument))));
+                            base64String = "#R" + encodeURIComponent(btoa(String.fromCharCode.apply(null, new Uint8Array(basedocument))));
                             content.append("<iframe style='width:100%;height:100%' src='" + uri + "'></iframe>");
                             return [2 /*return*/];
                     }
