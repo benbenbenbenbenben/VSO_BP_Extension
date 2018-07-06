@@ -63,11 +63,9 @@ export class BusinessProcess {
         // tslint:disable-next-line:no-console
         console.log("loaded BPM config: ", config)
 
-        if (config.repositoryType === "git") {
-            // const files = await gitclient.getFilePaths(this.projectId, config.repositoryId, config.repositoryPath)
-            // tslint:disable-next-line:no-console
-            console.log(this.getTree(config))
-        }
+        // load UI
+        const content = $("#content")
+        content.append("<div>hello world</div>")
     }
 
     public async getTree(config) {

@@ -124,7 +124,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
         };
         BusinessProcess.prototype.run = function () {
             return __awaiter(this, void 0, void 0, function () {
-                var self, config, gitRepos;
+                var self, config, gitRepos, content;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -143,11 +143,8 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                         case 4:
                             // tslint:disable-next-line:no-console
                             console.log("loaded BPM config: ", config);
-                            if (config.repositoryType === "git") {
-                                // const files = await gitclient.getFilePaths(this.projectId, config.repositoryId, config.repositoryPath)
-                                // tslint:disable-next-line:no-console
-                                console.log(this.getTree(config));
-                            }
+                            content = $("#content");
+                            content.append("<div>hello world</div>");
                             return [2 /*return*/];
                     }
                 });
