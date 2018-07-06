@@ -90,8 +90,8 @@ export class BusinessProcess {
             ui: "min"
         })
         // tslint:disable-next-line:max-line-length
-        const base64String = "#R" + encodeURIComponent(basedocument);
-        content.append(`<iframe style='width:100%;height:100%' src='${uri}'></iframe>`)
+        const encodedDocument = "#R" + encodeURIComponent(basedocument);
+        content.append(`<iframe style='width:100%;height:100%' src='${uri + encodedDocument}'></iframe>`)
     }
 
     public async getTree(config) {

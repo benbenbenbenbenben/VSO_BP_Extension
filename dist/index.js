@@ -124,7 +124,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
         };
         BusinessProcess.prototype.run = function () {
             return __awaiter(this, void 0, void 0, function () {
-                var self, config, gitRepos, content, rootFilePaths, rootXmlFiles, basedocument, uri, base64String;
+                var self, config, gitRepos, content, rootFilePaths, rootXmlFiles, basedocument, uri, encodedDocument;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -170,8 +170,8 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                 splash: "0",
                                 ui: "min"
                             });
-                            base64String = "#R" + encodeURIComponent(basedocument);
-                            content.append("<iframe style='width:100%;height:100%' src='" + uri + "'></iframe>");
+                            encodedDocument = "#R" + encodeURIComponent(basedocument);
+                            content.append("<iframe style='width:100%;height:100%' src='" + (uri + encodedDocument) + "'></iframe>");
                             return [2 /*return*/];
                     }
                 });
