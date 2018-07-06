@@ -171,7 +171,8 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                 ui: "min"
                             });
                             encodedDocument = "#R" + encodeURIComponent(basedocument);
-                            content.append("<iframe style='width:100%;height:100%' src='" + (uri + encodedDocument) + "'></iframe>");
+                            // tslint:disable-next-line:max-line-length
+                            content.append("<iframe name='editWindow' id='editWindow' style='width:100%;height:100%' src='" + (uri + encodedDocument) + "'></iframe>");
                             return [2 /*return*/];
                     }
                 });

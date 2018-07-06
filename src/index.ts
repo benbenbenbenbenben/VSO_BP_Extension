@@ -91,7 +91,8 @@ export class BusinessProcess {
         })
         // tslint:disable-next-line:max-line-length
         const encodedDocument = "#R" + encodeURIComponent(basedocument);
-        content.append(`<iframe style='width:100%;height:100%' src='${uri + encodedDocument}'></iframe>`)
+        // tslint:disable-next-line:max-line-length
+        content.append(`<iframe name='editWindow' id='editWindow' style='width:100%;height:100%' src='${uri + encodedDocument}'></iframe>`)
     }
 
     public async getTree(config) {
