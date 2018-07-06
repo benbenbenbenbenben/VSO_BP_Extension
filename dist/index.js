@@ -249,7 +249,6 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                                 repositoryType: newRepositoryType
                                             });
                                             if (!((newRepositoryType !== oldRepositoryType)
-                                                || (newRepositoryType === "git" && newRepositoryPath !== oldRepositoryPath)
                                                 || (newGitRepository !== oldGitRepository))) return [3 /*break*/, 2];
                                             if (!(newRepositoryType === "git")) return [3 /*break*/, 2];
                                             treeCtrl.rootNode.clear();

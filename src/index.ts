@@ -152,7 +152,6 @@ export class BusinessProcess {
                 })
                 // change tree if we've changed repo type
                 if ((newRepositoryType !== oldRepositoryType)
-                || (newRepositoryType === "git" && newRepositoryPath !== oldRepositoryPath)
                 || (newGitRepository !== oldGitRepository)) {
                     if (newRepositoryType === "git") {
                         treeCtrl.rootNode.clear()
