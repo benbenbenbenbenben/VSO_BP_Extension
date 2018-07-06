@@ -41,7 +41,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionControl/TfvcRestClient", "VSS/Controls", "VSS/Controls/Combos", "VSS/Controls/Dialogs", "VSS/Controls/TreeView"], function (require, exports, GitHttpClient, TfvcRestClient, Controls, Combos, Dialogs, TreeView) {
+define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionControl/TfvcRestClient", "VSS/Controls", "VSS/Controls/Combos", "VSS/Controls/Dialogs", "VSS/Controls/TreeView", "VSS/Utils/Url"], function (require, exports, GitHttpClient, TfvcRestClient, Controls, Combos, Dialogs, TreeView, Url_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var BusinessProcess = /** @class */ (function () {
@@ -144,7 +144,8 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                             // tslint:disable-next-line:no-console
                             console.log("loaded BPM config: ", config);
                             content = $("#content");
-                            content.append("<iframe style='width:100%;height:100%' src='" + config.baseUrl + "'></iframe>");
+                            // tslint:disable-next-line:max-line-length
+                            content.append("<iframe style='width:100%;height:100%' src='" + this.addUrlParameters(config.baseUrl, { ui: "min" }) + "'></iframe>");
                             return [2 /*return*/];
                     }
                 });
@@ -195,6 +196,14 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                     }
                 });
             });
+        };
+        BusinessProcess.prototype.addUrlParameters = function (url, parameters) {
+            var uri = new Url_1.Uri(url);
+            for (var _i = 0, parameters_1 = parameters; _i < parameters_1.length; _i++) {
+                var key = parameters_1[_i];
+                uri.addQueryParam(key, parameters[key], true);
+            }
+            return uri.absoluteUri;
         };
         BusinessProcess.prototype.convertToTreeNodes = function (items) {
             var _this = this;

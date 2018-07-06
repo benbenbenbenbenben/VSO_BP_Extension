@@ -11,6 +11,7 @@ import StatusIndicator = require("VSS/Controls/StatusIndicator")
 import TreeView = require("VSS/Controls/TreeView")
 import { ExtensionDataService } from "VSS/SDK/Services/ExtensionData"
 import Utils_String = require("VSS/Utils/String")
+import { Uri } from "VSS/Utils/Url";
 
 export class BusinessProcess {
 
@@ -65,7 +66,8 @@ export class BusinessProcess {
 
         // load UI
         const content = $("#content")
-        content.append(`<iframe style='width:100%;height:100%' src='${config.baseUrl}'></iframe>`)
+        // tslint:disable-next-line:max-line-length
+        content.append(`<iframe style='width:100%;height:100%' src='${this.addUrlParameters(config.baseUrl, { ui: "min" })}'></iframe>`)
     }
 
     public async getTree(config) {
@@ -97,6 +99,14 @@ export class BusinessProcess {
                 return null;
             }
         }
+    }
+
+    private addUrlParameters(url: string, parameters) {
+        const uri = new Uri(url)
+        for (const key of parameters) {
+            uri.addQueryParam(key, parameters[key], true)
+        }
+        return uri.absoluteUri
     }
 
     private convertToTreeNodes(items) {
