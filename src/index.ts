@@ -29,7 +29,7 @@ export class BusinessProcess {
     }
     // get config
     public async getConfig() {
-        const defaultBaseUrl = "https://graph.dcdc.io/drawio/src/main/webapp"
+        const defaultBaseUrl = "https://graph.dcdc.io/drawio/src/main/webapp/"
         const defaultconfig = {
             baseUrl: defaultBaseUrl,
             repositoryId: null,
@@ -67,7 +67,22 @@ export class BusinessProcess {
         // load UI
         const content = $("#content")
         // tslint:disable-next-line:max-line-length
-        content.append(`<iframe style='width:100%;height:100%' src='${this.addUrlParameters(config.baseUrl, { ui: "min" })}'></iframe>`)
+        /*
+        ?lightbox=1
+        &highlight=0000ff
+        &edit=https%3A%2F%2Fgraph.dcdc.io%2Fdrawio%2Fsrc%2Fmain%2Fwebapp%2F%3Fui%3Dmin
+        &layers=1
+        &nav=1
+        */
+        const uri = this.addUrlParameters(config.baseUrl, {
+            edit: `${this.addUrlParameters(config.baseUrl, { ui: "min" })}`,
+            highlight: "0000ff",
+            layers: "1",
+            lightbox: "1",
+            nav: "1",
+            ui: "min",
+        })
+        content.append(`<iframe style='width:100%;height:100%' src='${uri}'></iframe>`)
     }
 
     public async getTree(config) {

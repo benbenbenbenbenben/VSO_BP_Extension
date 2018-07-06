@@ -82,7 +82,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            defaultBaseUrl = "https://graph.dcdc.io/drawio/src/main/webapp";
+                            defaultBaseUrl = "https://graph.dcdc.io/drawio/src/main/webapp/";
                             defaultconfig = {
                                 baseUrl: defaultBaseUrl,
                                 repositoryId: null,
@@ -124,7 +124,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
         };
         BusinessProcess.prototype.run = function () {
             return __awaiter(this, void 0, void 0, function () {
-                var self, config, gitRepos, content;
+                var self, config, gitRepos, content, uri;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -144,8 +144,15 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                             // tslint:disable-next-line:no-console
                             console.log("loaded BPM config: ", config);
                             content = $("#content");
-                            // tslint:disable-next-line:max-line-length
-                            content.append("<iframe style='width:100%;height:100%' src='" + this.addUrlParameters(config.baseUrl, { ui: "min" }) + "'></iframe>");
+                            uri = this.addUrlParameters(config.baseUrl, {
+                                edit: "" + this.addUrlParameters(config.baseUrl, { ui: "min" }),
+                                highlight: "0000ff",
+                                layers: "1",
+                                lightbox: "1",
+                                nav: "1",
+                                ui: "min",
+                            });
+                            content.append("<iframe style='width:100%;height:100%' src='" + uri + "'></iframe>");
                             return [2 /*return*/];
                     }
                 });
