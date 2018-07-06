@@ -80,6 +80,7 @@ export class BusinessProcess {
         #U<DATA> - gzipped or raw
         */
         const uri = this.addUrlParameters(config.baseUrl, {
+            cors: ".",
             edit: `${this.addUrlParameters(config.baseUrl, { ui: "min" })}`,
             highlight: "0000ff",
             layers: "1",
@@ -88,7 +89,8 @@ export class BusinessProcess {
             splash: "0",
             ui: "min"
         })
-        content.append(`<iframe style='width:100%;height:100%' src='${uri}'></iframe>`)
+        // tslint:disable-next-line:max-line-length
+        content.append(`<iframe style='width:100%;height:100%' src='${uri + "#U" + encodeURIComponent("https://lnesdev.visualstudio.com/_apis/git/repositories/9c4563d0-0a48-4db4-8921-aa1cf0e601ce/Items?path=BPM-L1%2FBookTime%2FBookTime.xml")}'></iframe>`)
     }
 
     public async getTree(config) {
