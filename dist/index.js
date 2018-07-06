@@ -124,7 +124,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
         };
         BusinessProcess.prototype.run = function () {
             return __awaiter(this, void 0, void 0, function () {
-                var self, config, gitRepos, content, uri;
+                var self, config, gitRepos, content, basedocument, uri;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -144,13 +144,26 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                             // tslint:disable-next-line:no-console
                             console.log("loaded BPM config: ", config);
                             content = $("#content");
+                            return [4 /*yield*/, this.gitclient.getItemContent(config.repositoryId, config.repositoryPath + "/README.md")
+                                /*
+                                ?lightbox=1
+                                &highlight=0000ff
+                                &edit=https%3A%2F%2Fgraph.dcdc.io%2Fdrawio%2Fsrc%2Fmain%2Fwebapp%2F%3Fui%3Dmin
+                                &layers=1
+                                &nav=1
+                                #U<DATA> - gzipped or raw
+                                */
+                            ];
+                        case 5:
+                            basedocument = _a.sent();
                             uri = this.addUrlParameters(config.baseUrl, {
                                 edit: "" + this.addUrlParameters(config.baseUrl, { ui: "min" }),
                                 highlight: "0000ff",
                                 layers: "1",
                                 lightbox: "1",
                                 nav: "1",
-                                ui: "min",
+                                splash: "0",
+                                ui: "min"
                             });
                             content.append("<iframe style='width:100%;height:100%' src='" + uri + "'></iframe>");
                             return [2 /*return*/];
