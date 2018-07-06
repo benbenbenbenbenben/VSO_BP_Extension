@@ -124,7 +124,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
         };
         BusinessProcess.prototype.run = function () {
             return __awaiter(this, void 0, void 0, function () {
-                var self, config, gitRepos, content, basedocument, uri;
+                var self, config, gitRepos, content, rootFilePaths, rootXmlFiles, basedocument, uri;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -144,7 +144,11 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                             // tslint:disable-next-line:no-console
                             console.log("loaded BPM config: ", config);
                             content = $("#content");
-                            return [4 /*yield*/, this.gitclient.getItemContent(config.repositoryId, config.repositoryPath + "/README.md")
+                            return [4 /*yield*/, this.gitclient.getFilePaths(this.projectId, config.repositoryId, config.repositoryPath)];
+                        case 5:
+                            rootFilePaths = _a.sent();
+                            rootXmlFiles = rootFilePaths.paths.filter(function (path) { return path.endsWith(".xml"); });
+                            return [4 /*yield*/, this.gitclient.getItemContent(config.repositoryId, rootXmlFiles[0])
                                 /*
                                 ?lightbox=1
                                 &highlight=0000ff
@@ -154,7 +158,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                 #U<DATA> - gzipped or raw
                                 */
                             ];
-                        case 5:
+                        case 6:
                             basedocument = _a.sent();
                             uri = this.addUrlParameters(config.baseUrl, {
                                 edit: "" + this.addUrlParameters(config.baseUrl, { ui: "min" }),
@@ -181,7 +185,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                             _a.label = 1;
                         case 1:
                             _a.trys.push([1, 3, , 4]);
-                            return [4 /*yield*/, this.gitclient.getFilePaths(this.projectId, config.repositoryId, config.repositoryPath)];
+                            return [4 /*yield*/, this.gitclient.getFilePaths(this.projectId, config.repositoryId)];
                         case 2:
                             files = _a.sent();
                             tree = files.paths

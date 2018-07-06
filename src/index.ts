@@ -66,8 +66,11 @@ export class BusinessProcess {
 
         // load UI
         const content = $("#content")
+        const rootFilePaths = await this.gitclient.getFilePaths(this.projectId,
+            config.repositoryId, config.repositoryPath)
+        const rootXmlFiles = rootFilePaths.paths.filter(path => path.endsWith(".xml"))
         const basedocument = await this.gitclient.getItemContent(config.repositoryId,
-            config.repositoryPath + "/README.md")
+            rootXmlFiles[0])
         /*
         ?lightbox=1
         &highlight=0000ff
@@ -92,7 +95,7 @@ export class BusinessProcess {
         if (config.type === "git") {
             try {
                 const files = await this.gitclient.getFilePaths(this.projectId,
-                    config.repositoryId, config.repositoryPath)
+                    config.repositoryId)
                 let tree = files.paths
                     // tslint:disable-next-line:max-line-length
                     .map(path => ({ name: path.split("/").reverse()[0], path: path.split("/").reverse().slice(1).reverse() }))
