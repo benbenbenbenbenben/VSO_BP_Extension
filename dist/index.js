@@ -82,7 +82,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            defaultBaseUrl = "https://graph.dcdc.io/extensions/VSO_BP_Extension";
+                            defaultBaseUrl = "https://graph.dcdc.io/drawio/src/main/webapp";
                             defaultconfig = {
                                 baseUrl: defaultBaseUrl,
                                 repositoryId: null,
@@ -144,7 +144,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                             // tslint:disable-next-line:no-console
                             console.log("loaded BPM config: ", config);
                             content = $("#content");
-                            content.append("<div>hello world</div>");
+                            content.append("<iframe style='width:100%;height:100%' src='" + config.baseUrl + "'></iframe>");
                             return [2 /*return*/];
                     }
                 });

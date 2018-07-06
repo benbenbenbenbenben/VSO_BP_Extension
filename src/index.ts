@@ -28,7 +28,7 @@ export class BusinessProcess {
     }
     // get config
     public async getConfig() {
-        const defaultBaseUrl = "https://graph.dcdc.io/extensions/VSO_BP_Extension"
+        const defaultBaseUrl = "https://graph.dcdc.io/drawio/src/main/webapp"
         const defaultconfig = {
             baseUrl: defaultBaseUrl,
             repositoryId: null,
@@ -65,7 +65,7 @@ export class BusinessProcess {
 
         // load UI
         const content = $("#content")
-        content.append("<div>hello world</div>")
+        content.append(`<iframe style='width:100%;height:100%' src='${config.baseUrl}'></iframe>`)
     }
 
     public async getTree(config) {
