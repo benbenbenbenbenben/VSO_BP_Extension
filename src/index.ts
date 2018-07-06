@@ -101,10 +101,12 @@ export class BusinessProcess {
         }
     }
 
-    private addUrlParameters(url: string, parameters) {
+    private addUrlParameters(url: string, parameters: object) {
         const uri = new Uri(url)
-        for (const key of parameters) {
-            uri.addQueryParam(key, parameters[key], true)
+        for (const key in parameters) {
+            if (parameters.hasOwnProperty(key)) {
+                uri.addQueryParam(key, parameters[key], true)
+            }
         }
         return uri.absoluteUri
     }

@@ -199,9 +199,10 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
         };
         BusinessProcess.prototype.addUrlParameters = function (url, parameters) {
             var uri = new Url_1.Uri(url);
-            for (var _i = 0, parameters_1 = parameters; _i < parameters_1.length; _i++) {
-                var key = parameters_1[_i];
-                uri.addQueryParam(key, parameters[key], true);
+            for (var key in parameters) {
+                if (parameters.hasOwnProperty(key)) {
+                    uri.addQueryParam(key, parameters[key], true);
+                }
             }
             return uri.absoluteUri;
         };
