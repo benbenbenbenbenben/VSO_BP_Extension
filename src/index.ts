@@ -67,7 +67,7 @@ export class BusinessProcess {
         // load UI
         const content = $("#content")
         const rootFilePaths = await this.gitclient.getFilePaths(this.projectId,
-            config.repositoryId, config.repositoryPath)
+            config.repositoryId, config.repositoryPath.substring(5))
         const rootXmlFiles = rootFilePaths.paths.filter(path => path.endsWith(".xml"))
         const basedocument = await this.gitclient.getItemContent(config.repositoryId,
             rootXmlFiles[0])

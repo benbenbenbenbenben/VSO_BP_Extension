@@ -144,7 +144,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                             // tslint:disable-next-line:no-console
                             console.log("loaded BPM config: ", config);
                             content = $("#content");
-                            return [4 /*yield*/, this.gitclient.getFilePaths(this.projectId, config.repositoryId, config.repositoryPath)];
+                            return [4 /*yield*/, this.gitclient.getFilePaths(this.projectId, config.repositoryId, config.repositoryPath.substring(5))];
                         case 5:
                             rootFilePaths = _a.sent();
                             rootXmlFiles = rootFilePaths.paths.filter(function (path) { return path.endsWith(".xml"); });
