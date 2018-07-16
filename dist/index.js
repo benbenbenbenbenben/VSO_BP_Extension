@@ -174,7 +174,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                 splash: "0",
                                 ui: "min"
                             });
-                            uri = this.addUrlParameters(config.baseUrl, {
+                            uri = this.addUrlParameters(uri, {
                                 edit: "" + uri,
                                 highlight: "0000ff",
                                 layers: "1",
