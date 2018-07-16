@@ -86,6 +86,7 @@ export class BusinessProcess {
             layers: "1",
             lightbox: "1",
             nav: "1",
+            p: "vstsbp",
             splash: "0",
             ui: "min"
         })
