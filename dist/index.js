@@ -174,8 +174,8 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                 splash: "0",
                                 ui: "min"
                             });
-                            uri = this.addUrlParameters(uri, {
-                                edit: "" + this.addUrlParameters(uri, { "vstsbp.resource": "local" }),
+                            uri = this.addUrlParameters(config.baseUrl, {
+                                edit: "" + uri,
                                 highlight: "0000ff",
                                 layers: "1",
                                 lightbox: "1",
@@ -183,6 +183,30 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                             });
                             // tslint:disable-next-line:max-line-length
                             content.append("<iframe name='editWindow' id='editWindow' style='width:100%;height:100%' src='" + (uri + encodedDocument) + "'></iframe>");
+                            // TODO: TEMP, refactor
+                            window.onmessage = function (e) {
+                                if (e.data.namespace && e.data.namespace === "vstsbp") {
+                                    // e.data and e.source
+                                    switch (e.data.action) {
+                                        case "notify":
+                                            switch (e.data.parameters[0]) {
+                                                case "editPluginReady":
+                                                    e.source.postMessage({
+                                                        action: "load",
+                                                        parameters: [
+                                                            encodedDocument.substring(1)
+                                                        ]
+                                                    }, "*");
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+                            };
                             return [2 /*return*/];
                     }
                 });
