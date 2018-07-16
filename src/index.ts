@@ -79,19 +79,28 @@ export class BusinessProcess {
         &nav=1
         #U<DATA> - gzipped or raw
         */
-        const uri = this.addUrlParameters(config.baseUrl, {
+
+        const encodedDocument = "#R" + encodeURIComponent(basedocument);
+        let uri = this.addUrlParameters(config.baseUrl, {
+            db: 0,
+            gapi: 0,
+            gh: 0,
+            od: 0,
+            tr: 0
+        })
+        uri = this.addUrlParameters(uri, {
             cors: ".",
-            edit: `${this.addUrlParameters(config.baseUrl, { ui: "min" })}`,
-            highlight: "0000ff",
-            layers: "1",
-            lightbox: "1",
-            nav: "1",
             p: "vstsbp",
             splash: "0",
             ui: "min"
         })
-        // tslint:disable-next-line:max-line-length
-        const encodedDocument = "#R" + encodeURIComponent(basedocument);
+        uri = this.addUrlParameters(config.baseUrl, {
+            edit: `${uri + encodedDocument}`,
+            highlight: "0000ff",
+            layers: "1",
+            lightbox: "1",
+            nav: "1",
+        })
         // tslint:disable-next-line:max-line-length
         content.append(`<iframe name='editWindow' id='editWindow' style='width:100%;height:100%' src='${uri + encodedDocument}'></iframe>`)
     }
