@@ -193,6 +193,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                                 case "editPluginReady":
                                                     e.source.postMessage({
                                                         action: "load",
+                                                        namespace: "vstsbp",
                                                         parameters: [
                                                             encodedDocument.substring(1)
                                                         ]

@@ -115,6 +115,7 @@ export class BusinessProcess {
                         case "editPluginReady":
                         e.source.postMessage({
                             action: "load",
+                            namespace: "vstsbp",
                             parameters: [
                                 encodedDocument.substring(1)
                             ]
