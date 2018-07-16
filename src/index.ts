@@ -83,11 +83,11 @@ export class BusinessProcess {
 
         const encodedDocument = "#R" + encodeURIComponent(basedocument);
         let uri = this.addUrlParameters(config.baseUrl, {
-            db: 0,
-            gapi: 0,
-            gh: 0,
-            od: 0,
-            tr: 0
+            db: "0",
+            gapi: "0",
+            gh: "0",
+            od: "0",
+            tr: "0"
         })
         uri = this.addUrlParameters(uri, {
             cors: ".",
