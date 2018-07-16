@@ -175,7 +175,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                 ui: "min"
                             });
                             uri = this.addUrlParameters(config.baseUrl, {
-                                edit: "" + (uri + encodedDocument),
+                                edit: "" + this.addUrlParameters(uri, { "vstsbp.resource": "local" }),
                                 highlight: "0000ff",
                                 layers: "1",
                                 lightbox: "1",
