@@ -67,8 +67,7 @@ export class BusinessProcess {
 
         // load UI
         const content = $("#content")
-        const rootFilePaths = await this.gitclient.getFilePaths(this.projectId,
-            config.repositoryId, config.repositoryPath.substring(5))
+        const rootFilePaths = await this.getPaths(config)
         const rootXmlFiles = rootFilePaths.paths.filter(path => path.endsWith(".xml"))
         const basedocument = await this.gitclient.getItemText(config.repositoryId,
             rootXmlFiles[0])
@@ -116,7 +115,7 @@ export class BusinessProcess {
                                 action: "tree.update",
                                 namespace: "vstsbp",
                                 parameters: [
-                                    rootFilePaths
+                                    this.pathsToTree(rootFilePaths.paths)
                                 ]
                             }, "*")
                             break;
@@ -131,30 +130,39 @@ export class BusinessProcess {
         }
     }
 
+    public async getPaths(config: { baseUrl: string; repositoryId: any; repositoryPath: any; repositoryType: any; }) {
+        return this.gitclient.getFilePaths(this.projectId, config.repositoryId, config.repositoryPath.substring(5));
+    }
+
+    public pathsToTree(paths: string[]) {
+        // tslint:disable-next-line:max-line-length
+        let tree = paths
+            .map(path => ({ name: path.split("/").reverse()[0], path: path.split("/").reverse().slice(1).reverse() }))
+            .reduce((obj, el) => {
+                const orig = obj;
+                for (const key of el.path) {
+                    const found = obj.find(e => e.name === key)
+                    if (found) {
+                        obj = found.children
+                    } else {
+                        const temp = {name: key, children: []}
+                        obj.push(temp)
+                        obj = temp.children
+                    }
+                }
+                obj.push(el.name)
+                return orig;
+            }, [])
+        tree = [{ name: "root", children: tree }]
+        return tree
+    }
+
     public async getTree(config) {
         if (config.type === "git") {
             try {
                 const files = await this.gitclient.getFilePaths(this.projectId,
                     config.repositoryId)
-                let tree = files.paths
-                    // tslint:disable-next-line:max-line-length
-                    .map(path => ({ name: path.split("/").reverse()[0], path: path.split("/").reverse().slice(1).reverse() }))
-                    .reduce((obj, el) => {
-                        const orig = obj;
-                        for (const key of el.path) {
-                            const found = obj.find(e => e.name === key)
-                            if (found) {
-                                obj = found.children
-                            } else {
-                                const temp = {name: key, children: []}
-                                obj.push(temp)
-                                obj = temp.children
-                            }
-                        }
-                        obj.push(el.name)
-                        return orig;
-                }, [])
-                tree = [{ name: "root", children: tree }]
+                const tree = this.pathsToTree(files.paths)
                 return this.convertToTreeNodes(tree)
             } catch (e) {
                 return null;

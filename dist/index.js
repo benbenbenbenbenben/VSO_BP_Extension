@@ -124,6 +124,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
         };
         BusinessProcess.prototype.run = function () {
             return __awaiter(this, void 0, void 0, function () {
+                var _this = this;
                 var self, config, gitRepos, content, rootFilePaths, rootXmlFiles, basedocument, encodedDocument, uri;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
@@ -144,7 +145,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                             // tslint:disable-next-line:no-console
                             console.log("loaded BPM config: ", config);
                             content = $("#content");
-                            return [4 /*yield*/, this.gitclient.getFilePaths(this.projectId, config.repositoryId, config.repositoryPath.substring(5))];
+                            return [4 /*yield*/, this.getPaths(config)];
                         case 5:
                             rootFilePaths = _a.sent();
                             rootXmlFiles = rootFilePaths.paths.filter(function (path) { return path.endsWith(".xml"); });
@@ -194,7 +195,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                                         action: "tree.update",
                                                         namespace: "vstsbp",
                                                         parameters: [
-                                                            rootFilePaths
+                                                            _this.pathsToTree(rootFilePaths.paths)
                                                         ]
                                                     }, "*");
                                                     break;
@@ -212,6 +213,40 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                 });
             });
         };
+        BusinessProcess.prototype.getPaths = function (config) {
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    return [2 /*return*/, this.gitclient.getFilePaths(this.projectId, config.repositoryId, config.repositoryPath.substring(5))];
+                });
+            });
+        };
+        BusinessProcess.prototype.pathsToTree = function (paths) {
+            // tslint:disable-next-line:max-line-length
+            var tree = paths
+                .map(function (path) { return ({ name: path.split("/").reverse()[0], path: path.split("/").reverse().slice(1).reverse() }); })
+                .reduce(function (obj, el) {
+                var orig = obj;
+                var _loop_1 = function (key) {
+                    var found = obj.find(function (e) { return e.name === key; });
+                    if (found) {
+                        obj = found.children;
+                    }
+                    else {
+                        var temp = { name: key, children: [] };
+                        obj.push(temp);
+                        obj = temp.children;
+                    }
+                };
+                for (var _i = 0, _a = el.path; _i < _a.length; _i++) {
+                    var key = _a[_i];
+                    _loop_1(key);
+                }
+                obj.push(el.name);
+                return orig;
+            }, []);
+            tree = [{ name: "root", children: tree }];
+            return tree;
+        };
         BusinessProcess.prototype.getTree = function (config) {
             return __awaiter(this, void 0, void 0, function () {
                 var files, tree, e_1;
@@ -225,30 +260,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                             return [4 /*yield*/, this.gitclient.getFilePaths(this.projectId, config.repositoryId)];
                         case 2:
                             files = _a.sent();
-                            tree = files.paths
-                                // tslint:disable-next-line:max-line-length
-                                .map(function (path) { return ({ name: path.split("/").reverse()[0], path: path.split("/").reverse().slice(1).reverse() }); })
-                                .reduce(function (obj, el) {
-                                var orig = obj;
-                                var _loop_1 = function (key) {
-                                    var found = obj.find(function (e) { return e.name === key; });
-                                    if (found) {
-                                        obj = found.children;
-                                    }
-                                    else {
-                                        var temp = { name: key, children: [] };
-                                        obj.push(temp);
-                                        obj = temp.children;
-                                    }
-                                };
-                                for (var _i = 0, _a = el.path; _i < _a.length; _i++) {
-                                    var key = _a[_i];
-                                    _loop_1(key);
-                                }
-                                obj.push(el.name);
-                                return orig;
-                            }, []);
-                            tree = [{ name: "root", children: tree }];
+                            tree = this.pathsToTree(files.paths);
                             return [2 /*return*/, this.convertToTreeNodes(tree)];
                         case 3:
                             e_1 = _a.sent();
