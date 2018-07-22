@@ -72,15 +72,6 @@ export class BusinessProcess {
         const rootXmlFiles = rootFilePaths.paths.filter(path => path.endsWith(".xml"))
         const basedocument = await this.gitclient.getItemText(config.repositoryId,
             rootXmlFiles[0])
-        /*
-        ?lightbox=1
-        &highlight=0000ff
-        &edit=https%3A%2F%2Fgraph.dcdc.io%2Fdrawio%2Fsrc%2Fmain%2Fwebapp%2F%3Fui%3Dmin
-        &layers=1
-        &nav=1
-        #U<DATA> - gzipped or raw
-        */
-
         const encodedDocument = "#R" + encodeURIComponent(basedocument);
         let uri = this.addUrlParameters(config.baseUrl, {
             db: "0",
@@ -112,17 +103,25 @@ export class BusinessProcess {
                 switch (e.data.action) {
                     case "notify":
                     switch (e.data.parameters[0]) {
-                        case "editPluginReady":
-                        e.source.postMessage({
-                            action: "load",
-                            namespace: "vstsbp",
-                            parameters: [
-                                encodedDocument.substring(1)
-                            ]
-                        }, "*")
-                        break;
+                        case "edit.ready":
+                            e.source.postMessage({
+                                action: "load",
+                                namespace: "vstsbp",
+                                parameters: [
+                                    encodedDocument.substring(1)
+                                ]
+                            }, "*")
+                        case "view.ready":
+                            e.source.postMessage({
+                                action: "tree.update",
+                                namespace: "vstsbp",
+                                parameters: [
+                                    rootFilePaths
+                                ]
+                            }, "*")
+                            break;
                         default:
-                        break;
+                            break;
                     }
                     break;
                     default:

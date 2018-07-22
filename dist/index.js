@@ -148,16 +148,7 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                         case 5:
                             rootFilePaths = _a.sent();
                             rootXmlFiles = rootFilePaths.paths.filter(function (path) { return path.endsWith(".xml"); });
-                            return [4 /*yield*/, this.gitclient.getItemText(config.repositoryId, rootXmlFiles[0])
-                                /*
-                                ?lightbox=1
-                                &highlight=0000ff
-                                &edit=https%3A%2F%2Fgraph.dcdc.io%2Fdrawio%2Fsrc%2Fmain%2Fwebapp%2F%3Fui%3Dmin
-                                &layers=1
-                                &nav=1
-                                #U<DATA> - gzipped or raw
-                                */
-                            ];
+                            return [4 /*yield*/, this.gitclient.getItemText(config.repositoryId, rootXmlFiles[0])];
                         case 6:
                             basedocument = _a.sent();
                             encodedDocument = "#R" + encodeURIComponent(basedocument);
@@ -190,12 +181,20 @@ define(["require", "exports", "TFS/VersionControl/GitRestClient", "TFS/VersionCo
                                     switch (e.data.action) {
                                         case "notify":
                                             switch (e.data.parameters[0]) {
-                                                case "editPluginReady":
+                                                case "edit.ready":
                                                     e.source.postMessage({
                                                         action: "load",
                                                         namespace: "vstsbp",
                                                         parameters: [
                                                             encodedDocument.substring(1)
+                                                        ]
+                                                    }, "*");
+                                                case "view.ready":
+                                                    e.source.postMessage({
+                                                        action: "tree.update",
+                                                        namespace: "vstsbp",
+                                                        parameters: [
+                                                            rootFilePaths
                                                         ]
                                                     }, "*");
                                                     break;
